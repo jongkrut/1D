@@ -1,0 +1,73 @@
+ <script type="text/ng-template" id="myModalContent.html">
+ <ion-modal-view>
+ 	<form>
+        <ion-header-bar>
+            <div class="padding-horizontal padding-top">
+                <h3 class="title">{{menu.menu_name}}</h3>
+            </div>
+        </ion-header-bar>
+        <ion-content>
+            <div class="list">
+        	    <div class="padding">{{ menu.menu_description}}</div>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Quantity</span>
+                    <input type="text" ng-model="menu.qty" placeholder="Qty" ng-init="menu.qty=1"/>
+                </label>
+                <label class="item item-input">
+        	       <textarea ng-model="menu.instructions" placeholder="Special Instructions"></textarea>
+                </label>
+            </div>
+
+            <div ng-if="menu.size.length>0">
+                <select ng-model="menu.size_id" name="size_id" class="form-control" required ng-options="sz.size_name for sz in menu.size"></select>
+            </div>
+
+            <div ng-if="menu.attr.length>0" class="list">
+                <label class="item item-input"> Available Additions</label>
+                <ion-checkbox ng-repeat="att in menu.attr" name="attr_id" id="checkbox_{{$index}}" ng-model="att.selected" value="{{att.attribute_id}}" type="checkbox"/>
+                    {{att.attribute_name}} {{att.attribute_price | currency : 'Rp ' : 0}}
+                </ion-checkbox>               
+            </div>
+        	
+            {{total | currency : 'Rp ' : 0}}
+            <button ng-click="closeModal()" class="button button-calm">Close</button>
+        	<button ng-click="addToCart(menu)" class="button button-balanced">Add To Cart</button>
+         </ion-content>
+    </form>
+</ion-modal-view>
+</script>
+<ion-content style="background-color:#fff">
+
+<div class="bar-subheader" style="padding:0;margin-top:0px">
+<ion-scroll direction="x" style="width:100%;overflow:scroll;white-space:nowrap;height:50px;line-height:50px">
+        <div class="nav-cat" ng-repeat="category in menuCategories" ng-class="{active:tab===category.category_id}"> 
+    		<a href="" data-toggle="tab" ng-click="loadMenu(category.category_id)">{{category.category_name}} </a>
+    	</div>
+</ion-scroll>
+</div>
+
+<div ng-repeat="category in menuCategories" ng-show="tab == category.category_id">
+	<div class="list"> 
+		<a ng-repeat="menu in menus" class="item item-thumbnail-left item-text-wrap" href ng-click="openModal(menu.menu_id)">
+			<img ng-src="http://117.102.249.127/inc/upload/{{menu.menu_image}}" alt="{{menu.menu_name}}" style="width:100px;"/>
+			<h3 style="font-weight:bold">{{menu.menu_name}}</h3>
+			<p>{{menu.menu_description}}</p>
+		</a>			
+	</div>
+</div>
+
+<div style="height:100px;width:100%"></div>
+
+</ion-content>
+
+<div class="bar bar-subfooter" style="position:fixed;bottom:30px;width:100%">
+    <cartcontents></cartcontents>
+</div>
+
+
+
+
+
+
+
+

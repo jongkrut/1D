@@ -1,0 +1,39 @@
+<div id="home_container">
+<div style="width:100%;float:left;text-align:center;">
+	<img src="img/boga_logo.png" style="width:200px"/>
+</div>
+
+<div class="container-fluid" ng-show="login_front">
+	<div class="rows">
+		<div class="col-xs-8 col-xs-offset-2 container-login">
+			<button class="btn btn-lg login btn-block" ng-click="doLogin()">Login</button><br/>
+			Don't have an account?
+			<button class="btn btn-lg signup btn-block">Signup</button>
+		</div>
+	</div>
+</div>
+
+
+<div class="container-fluid" ng-show="login_login">
+	<div class="rows">
+		<div class="col-xs-8 col-xs-offset-2 container-login">
+			<form>
+				<input type="text" class="form-control" placeholder="Username" ng-model="login.cust_email"/><br/>
+				<input type="password" class="form-control" placeholder="Password" ng-model="login.cust_pswd"/><br/>
+				<button type="submit" class="btn btn-primary btn-block" ng-click="doSignin(login)">Login</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid" ng-show="login_signup">
+	<div class="rows">
+		<div class="col-xs-8 col-xs-offset-2 container-login">
+			<form>
+				<input type="text" class="form-control" placeholder="Username" />
+				<input type="password" class="form-control" placeholder="Password"/>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
