@@ -13,9 +13,9 @@ app.config(['$stateProvider', function($stateProvider) {
 	}).state('home', { 	url : '/',
 						templateUrl : 'home.html',
 						controller : 'homeCtrl'
-	}).state('addAddress', { 
-						url : '/addAddress',
-						templateUrl : 'address.html',
+	}).state('map-search', { 
+						url : '/map-search',
+						templateUrl : 'map-search.html',
 						controller : 'mapsCtrl'
 	}).state('search', { 
 						url : '/search/:addr_id',
@@ -32,8 +32,7 @@ app.config(['$stateProvider', function($stateProvider) {
 	});	
 }]);
 
-app.config(function($urlRouterProvider){
-    // when there is an empty route, redirect to /index   
+app.config(function($urlRouterProvider){ 
     $urlRouterProvider.when('', '/');
 });
 
@@ -65,7 +64,7 @@ app.controller('loginCtrl',function($scope,$http,$location){
 
 app.controller('homeCtrl',function($scope,$location){
     $scope.toMap = function(){
-	$location.path('/addAddress');
+		$location.path('/map-search');
     };
 });
 
@@ -207,35 +206,54 @@ app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$
 	};
 });
 
-app.controller('mapsCtrl',function($scope) {
-	$scope.txt = "asdasD";
+app.controller('mapsCtrl',function($scope,$http,$ionicLoading) {
+	$scope.latitude = -6.219260;
+	$scope.longitude = 106.812410;
+
+	$scope.show = function() {
+	    $ionicLoading.show({
+	      template: 'Loading...'
+	    });
+	};
+	$scope.hide = function(){
+	    $ionicLoading.hide();
+	};
+
+	$scope.show();
+	var mapOptions = {	center: new google.maps.LatLng($scope.latitude,$scope.longitude),
+					 	zoom : 15,
+						mapTypeId: google.maps.MapTypeId.ROADMAP,
+						scrollwheel: false,
+						streetViewControl: false
+					 };
+
+	$scope.map =  new google.maps.Map(document.getElementById('map'), mapOptions);
 	
-	$scope.map = new google.maps.Map(document.getElementById('map-canvas'), {
-		center : new google.maps.LatLng(-6.219260,106.812410),
-		zoom : 15,
-		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		scrollwheel: false,
-		streetViewControl: false
-	});
-
-	var infowindow = new google.maps.InfoWindow({
-		maxWidth : 300
-	});
-
-	var marker = new google.maps.Marker({
-		map : $scope.map,
-		anchorPoint: new google.maps.Point(0,-29),
-		draggable :true,
-	  });
-
 	var input = document.getElementById('addr_input');
 	var autooption = {
 		componentRestrictions : { country: 'id' }
 	};
-
 	var autocomplete = new google.maps.places.Autocomplete(input,autooption);
 
-	google.maps.event.addListener(autocomplete,'place_changed',function(){
-		
+	navigator.geolocation.getCurrentPosition(function(position) {
+		$scope.latitude = position.coords.latitude;
+        $scope.longitude = position.coords.longitude;
+        $scope.accuracy = position.coords.accuracy;
+        $scope.$apply();
+
+        $scope.map.setCenter(new google.maps.LatLng($scope.latitude,$scope.longitude));
+        var myLocation = new google.maps.Marker({
+            position: new google.maps.LatLng($scope.latitude,$scope.longitude),
+            map: $scope.map,
+            title: "My Location"
+        });
+        var httpz = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+$scope.latitude+","+$scope.longitude+"&key=AIzaSyDwb8lxMiMVIVM4ZQ98RssfumMr8Olepzw";
+        //var httpz = url + "/coord-search.php?lat="+$scope.latitude+"&lng="+$scope.longitude+"&callback=JSON_CALLBACK";
+        $http.get(httpz).success(function(data){
+   			//console.log(data);
+        	$scope.full_address = data.results[0].formatted_address;
+        	$scope.hide();
+        });
+
 	});
 });

@@ -1,0 +1,22 @@
+<ion-content style="background-color:#eee">
+
+<div class="card">
+  	<div class="item item-text-wrap">
+		{{full_address}}
+	</div>
+</div>
+
+<div style="display:none">
+	Tell us your location<br/>
+	Street Address, City, or Building Name
+	<input type="text" class="form-control" id="addr_input"/>
+	Search
+</div>
+
+
+<div id="map"></div>
+
+</ion-content>
+<div class="bar bar-subfooter" style="position:fixed;bottom:0px;width:100%">
+    {{ latitude}}
+</div>
