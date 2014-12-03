@@ -1,28 +1,27 @@
 <ion-content style="background-color:#eee">
 
-<div class="card">
+<div class="card" ng-hide="searchInput">
   	<div class="item item-text-wrap">
 		{{full_address}}
 	</div>
 </div>
 
-<div style="display:none">
-	Tell us your location<br/>
-	Street Address, City, or Building Name
-	<input type="text" class="form-control" id="addr_input"/>
-	Search
+<div ng-show="searchInput" class="list">
+	<label class="item item-input">
+		<input type="text" class="form-control" id="addr_input" placeholder="Search your address"/>
+	</label>
 </div>
 
 
 <div id="map"></div>
 
 </ion-content>
-<div class="bar bar-subfooter" style="position:fixed;bottom:0px;width:100%;text-align:center;height:70px">
+<div class="bar bar-subfooter" style="position:fixed;padding-bottom:5px;bottom:0px;width:100%;text-align:center;height:75px">
 	<div ng-if="areaCoverage>0">
-    	{{areaCoverage}} Restaurants Found Near Your Location. <button class="button" ng-click="goSearch()">Show Restaurants</button>
+    	{{areaCoverage}} Restaurants Found Near Your Location. <a href="#/search" class="button button-balanced button-block">Show Restaurants</a>
     </div>
 
     <div ng-if="areaCoverage==0">
-    	No Restaurants Found! <br/><button class="button" ng-click="searchAddress()">Search Other Address</button>
+    	No Restaurants Found! <br/><button class="button button-assertive button-block" ng-click="searchAddress()">Search Other Address</button>
     </div>
 </div>

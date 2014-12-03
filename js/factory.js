@@ -40,6 +40,8 @@ angular.module('cart',[]).factory('Cart',function(){
 angular.module('search',[]).factory('Search',function(){
 	var cart = {
 		items : '',
+		latitude : '',
+		longitude : '',
 		init: function(){
 			localStorage.setItem("search",JSON.stringify([]));
 		},
@@ -53,6 +55,13 @@ angular.module('search',[]).factory('Search',function(){
 		},
 		remove: function(){
 			localStorage.setItem("search",JSON.stringify([]));
+		},
+		addLoc: function(lat,lng) {
+			latitude = lat;
+			longitude = lng;
+		},
+		getLoc : function() {
+			return latitude + "," + longitude;
 		}
 	}
 	return cart;

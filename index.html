@@ -24,15 +24,25 @@
 <ion-side-menus >
     <ion-side-menu-content drag-content="false">
     	<ion-header-bar  class="navbar">
+			<a class="navbar-icon" back-button ng-hide="onHome">
+				<i class="ion-arrow-left-b"></i>
+				<img alt="Brand" src="img/boga_icon.png" style="height:30px;width:auto;"> 
+			</a>
+			<a class="navbar-icon" ng-click="toggleLeft()" ng-show="onHome">
+				<i class="ion-navicon"></i>
+				<img alt="Brand" src="img/boga_icon.png" style="height:30px;width:auto;"> 
+			</a>
+  
 		  	<h1 class="title navbar-header">Boga Delivery</h1>
-			<img alt="Brand" src="img/boga_icon.png" style="height:30px;width:auto;"> 
+			
+			
 		</ion-header-bar>
 		
 		<ion-nav-view animation="slide-left-right"></ion-nav-view>
 		
     </ion-side-menu-content>
-    <ion-side-menu side="left" >
-    	asd
+    <ion-side-menu side="left" ng-controller="panelCtrl">
+    	This is panel.
     </ion-side-menu>
 </ion-side-menus>
 	
