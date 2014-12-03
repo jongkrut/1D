@@ -17,6 +17,12 @@
 <div id="map"></div>
 
 </ion-content>
-<div class="bar bar-subfooter" style="position:fixed;bottom:0px;width:100%">
-    {{ latitude}}
+<div class="bar bar-subfooter" style="position:fixed;bottom:0px;width:100%;text-align:center;height:70px">
+	<div ng-if="areaCoverage>0">
+    	{{areaCoverage}} Restaurants Found Near Your Location. <button class="button" ng-click="goSearch()">Show Restaurants</button>
+    </div>
+
+    <div ng-if="areaCoverage==0">
+    	No Restaurants Found! <br/><button class="button" ng-click="searchAddress()">Search Other Address</button>
+    </div>
 </div>

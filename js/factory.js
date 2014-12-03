@@ -36,3 +36,24 @@ angular.module('cart',[]).factory('Cart',function(){
 	}
 	return cart;
 });
+
+angular.module('search',[]).factory('Search',function(){
+	var cart = {
+		items : '',
+		init: function(){
+			localStorage.setItem("search",JSON.stringify([]));
+		},
+		getAll: function(){
+			return localStorage.getItem("search");
+		},
+		addOutlet: function(outlet) {
+			var items = JSON.parse(localStorage.getItem("search"));
+			items.push(outlet);
+			localStorage.setItem("search",JSON.stringify(items));
+		},
+		remove: function(){
+			localStorage.setItem("search",JSON.stringify([]));
+		}
+	}
+	return cart;
+});

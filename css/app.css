@@ -157,7 +157,7 @@
 	height:225px;
 	border-radius:225px;
 	background-color:#fff;
-	float:left;
+	clear:both;
 	position:relative;
 	left:50%;
 	transform:translate(-50%,0);

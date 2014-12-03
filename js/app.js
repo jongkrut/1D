@@ -2,6 +2,7 @@ var url = "http://128.199.190.218";
 var app = angular.module('indexApp', [
   "sdfilters",
   "cart",
+  "search",
   "ionic"
 ]);
 
@@ -206,7 +207,10 @@ app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$
 	};
 });
 
-app.controller('mapsCtrl',function($scope,$http,$ionicLoading) {
+app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search) {
+	var areaJson = {};
+	Search.init();
+	$scope.areaCoverage = 0;
 	$scope.latitude = -6.219260;
 	$scope.longitude = 106.812410;
 
@@ -235,25 +239,57 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading) {
 	};
 	var autocomplete = new google.maps.places.Autocomplete(input,autooption);
 
-	navigator.geolocation.getCurrentPosition(function(position) {
-		$scope.latitude = position.coords.latitude;
-        $scope.longitude = position.coords.longitude;
-        $scope.accuracy = position.coords.accuracy;
-        $scope.$apply();
+	$http.get("http://backoffice.satudelivery.com/protected/ordering/area.json").success(function(data){
+        areaJson = data; 
 
-        $scope.map.setCenter(new google.maps.LatLng($scope.latitude,$scope.longitude));
-        var myLocation = new google.maps.Marker({
-            position: new google.maps.LatLng($scope.latitude,$scope.longitude),
-            map: $scope.map,
-            title: "My Location"
-        });
-        var httpz = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+$scope.latitude+","+$scope.longitude+"&key=AIzaSyDwb8lxMiMVIVM4ZQ98RssfumMr8Olepzw";
-        //var httpz = url + "/coord-search.php?lat="+$scope.latitude+"&lng="+$scope.longitude+"&callback=JSON_CALLBACK";
-        $http.get(httpz).success(function(data){
-   			//console.log(data);
-        	$scope.full_address = data.results[0].formatted_address;
-        	$scope.hide();
-        });
+        if(navigator.geolocation) {
+	    	navigator.geolocation.getCurrentPosition(function(position) {
+				$scope.latitude = position.coords.latitude;
+		        $scope.longitude = position.coords.longitude;
+		        $scope.accuracy = position.coords.accuracy;
+		        $scope.$apply();
 
+		        $scope.map.setCenter(new google.maps.LatLng($scope.latitude,$scope.longitude));
+		        var myLocation = new google.maps.Marker({
+		            position: new google.maps.LatLng($scope.latitude,$scope.longitude),
+		            map: $scope.map,
+		            title: "My Location"
+		        });
+		        var httpz = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+$scope.latitude+","+$scope.longitude+"&key=AIzaSyDwb8lxMiMVIVM4ZQ98RssfumMr8Olepzw";
+		        //var httpz = url + "/coord-search.php?lat="+$scope.latitude+"&lng="+$scope.longitude+"&callback=JSON_CALLBACK";
+		        $http.get(httpz).success(function(data){
+		   			//console.log(data);
+		        	$scope.full_address = data.results[0].formatted_address;
+		        	
+		        });
+		        var log = 0;
+		        Search.remove();
+				angular.forEach(areaJson, function(value,key){
+					angular.forEach(value.outlet,function(value1,key1){
+						var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
+						var pathPoly = new google.maps.Polygon({
+							path: pathArray
+						});
+						if(google.maps.geometry.poly.containsLocation(new google.maps.LatLng($scope.latitude,$scope.longitude),pathPoly)) {
+						    log++;
+						    Search.addOutlet(value1.id);
+						}				
+					});
+				});
+				$scope.areaCoverage = log;
+				$scope.hide();
+			});
+		}
+		else {
+			$scope.hide();
+			console.log("denied");
+		}
 	});
+
+	$scope.searchAddress = function() {
+
+	};
+	$scope.goSearch = function() {
+		alert("OK");
+	};
 });
