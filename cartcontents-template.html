@@ -3,8 +3,8 @@
 		{{items}}<br/>
 		<span>items in your order</span>
 	</div>
-	<div class="cart-summary-right">
+	<div class="cart-summary-right"><a ng-href="#/cart/{{outlet_id}}/{{brand_id}}">
 		{{prices | currency : 'Rp ' :0}}<br/>
-		<span>total price in your cart</span>
+		<span>total price in your cart</span></a>
 	</div>
 </div>

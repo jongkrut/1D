@@ -3,7 +3,8 @@ var app = angular.module('indexApp', [
   "sdfilters",
   "cart",
   "search",
-  "ionic"
+  "ionic",
+  "ui.bootstrap.datetimepicker"
 ]);
 
 app.config(['$stateProvider', function($stateProvider) {
@@ -30,6 +31,10 @@ app.config(['$stateProvider', function($stateProvider) {
 						url : '/order/:outlet_id/:brand_id',
 						templateUrl : 'order.html',
 						controller : 'orderCtrl'
+	}).state('cart', { 
+						url : '/cart/:outlet_id/:brand_id',
+						templateUrl : 'cart.html',
+						controller : 'cartCtrl'
 	});	
 }]);
 
@@ -229,7 +234,7 @@ app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$
 	    $scope.total = $scope.menu.qty * (price_ea + price_attr);
 	},true);
 
-  	Cart.init();
+  	Cart.init($scope.outlet_id);
   	$scope.items = Cart.getTotalItems();
   	$scope.prices = Cart.getTotalPrice();
 }).directive('cartcontents',function() {
@@ -357,4 +362,74 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location) 
 	$scope.searchAddress = function() {
 		$scope.searchInput = true;
 	};
+});
+
+
+app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
+	$scope.outlet_id = $stateParams.outlet_id;
+	$scope.brand_id = $stateParams.brand_id;
+	Cart.init($scope.outlet_id);
+	$scope.items = Cart.getAll();
+	var totalItems = Cart.getTotalItems();
+	if(totalItems == 0)
+		$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id);
+	
+	var totalPrice = 0;
+	angular.forEach($scope.items,function(value,key){
+		var price_ea = parseInt(value.menu_price);
+		if(value.size_id) {
+			price_ea = parseInt(value.size_id.size_price);
+		}
+		totalPrice += parseInt(value.qty) * price_ea;
+		if(value.attr) {
+			angular.forEach(value.attr,function(value1,key1) {
+				totalPrice += parseInt(value1.attribute_price) * parseInt(value.qty);
+			});
+		}
+	});
+
+	$scope.totalPrice = totalPrice;
+	$scope.totalItems = totalItems;
+
+	var urlz = url + "/getFees.php?outlet_id="+$scope.outlet_id+"&brand_id="+$scope.brand_id+"&callback=JSON_CALLBACK";
+	
+
+	$scope.editItem = function(index) {
+
+	};
+
+	$scope.deleteItem = function(index) {
+		Cart.removeItem(index);
+		$scope.items = Cart.getAll();
+		var totalItems = Cart.getTotalItems;
+		if(totalItems == 0)
+			$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id);
+	};
+
+
+	$scope.showPopup = function() {
+		$scope.data = {};
+		$scope.data.datetimetype = 1;
+		$scope.data.datetime = new Date();
+		var myPopup = $ionicPopup.show({
+		    templateUrl: 'datetime-template.html',
+		    title: 'Please Select Date and Time',
+		    scope: $scope,
+		    buttons: [
+		    	{ text: 'Cancel',
+		    	  onTap: function(e) {
+		    		$scope.data.datetimetype = 1;
+		    	  	$scope.data.datetime = new Date();
+		    	  }
+		  		},
+		      	{ text: '<b>Save</b>',
+		        	type: 'button-positive',
+		        	onTap: function(e) {
+		        		$scope.data.datetimetype = 2;
+		        		return $scope.data.datetime;
+		        	}
+		        },
+		    ]
+		});
+ 	};
 });

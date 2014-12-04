@@ -1,7 +1,7 @@
 <ion-content style="background-color:#eee">
 
-<div class="card" ng-hide="searchInput">
-  	<div class="item item-text-wrap">
+<div ng-hide="searchInput">
+  	<div class="item item-text-wrap" style="font-size:12px">
 		{{full_address}}
 	</div>
 </div>
@@ -16,6 +16,7 @@
 <div id="map"></div>
 
 </ion-content>
+
 <div class="bar bar-subfooter" style="position:fixed;padding-bottom:5px;bottom:0px;width:100%;text-align:center;height:75px">
 	<div ng-if="areaCoverage>0">
     	{{areaCoverage}} Restaurants Found Near Your Location. <a href="#/search" class="button button-balanced button-block">Show Restaurants</a>

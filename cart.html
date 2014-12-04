@@ -1,0 +1,82 @@
+<script id="datetime-template.html" type="text/ng-template">
+	<div style="text-align:center;width:100%">{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}</div>
+   	<datetimepicker data-ng-model="data.datetime" min-date="minDate" show-weeks="true" data-datetimepicker-config="{ minuteStep: 30 }"></datetimepicker>
+</script>
+
+<ion-content style="background-color:#eee">
+
+<div class="row" style="font-size:12px">
+	<div class="col col-33" style="border-right:1px solid #bdbdbd">
+		<strong style="font-size:14px">{{totalItems}}</strong><br/>
+		items in your order
+	</div>
+	<div class="col">
+		<strong style="font-size:14px">{{totalPrice | currency : 'Rp ' : 0}}</strong><br/>
+		total order amount incl. additional fees
+	</div>
+</div>
+
+<ion-list show-delete="shouldShowDelete">
+	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:15px">
+		<div class="row">
+			<div class="col col-10">
+				{{item.qty}}x 
+			</div>
+			<div class="col">
+				{{item.menu_name}} <span ng-show="item.size_id">({{item.size_id.size_name}})</span>
+
+				<div ng-repeat = "att in item.attr" style="font-style:italic;font-size:14px">
+					+ {{att.attribute_name}}
+				</div>
+				<div style="font-size:14px">
+					{{item.menu_price | currency : 'Rp ' : 0}}
+				</div>
+			</div>
+		</div>
+		<ion-option-button class="button button-positive" ng-click="editItem($index)">
+	     	<i class="ion-close-round"></i>
+	    </ion-option-button>
+	    <ion-option-button class="button button-info" ng-click="deleteItem($index)">
+	    	<i class="ion-compose"></i>
+	    </ion-option-button>
+	</ion-item>
+
+	<ion-item>
+		<div class="row">
+			<div class="col col-10">
+			 	
+			</div>
+			<div class="col">
+				Tax &amp; Service Charge
+				<div style="font-size:14px">
+					14314
+				</div>
+			</div>
+		</div>
+	</ion-item>
+
+	<ion-item>
+		<div class="row">
+			<div class="col col-10">
+			 </div>
+			<div class="col">
+				Delivery Fee
+				<div style="font-size:14px">
+					14314
+				</div>
+			</div>
+		</div>
+	</ion-item>
+</ion-list>
+	{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}
+<div class="button-bar" style="margin-top:25px">
+	<a class="button" ng-click="showPopup()">
+	Delivery Time
+	</a>
+
+	<a class="button">
+	Checkout
+	</a>
+</div>
+
+</ion-content>
