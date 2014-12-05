@@ -3,9 +3,10 @@
    	<datetimepicker data-ng-model="data.datetime" min-date="minDate" show-weeks="true" data-datetimepicker-config="{ minuteStep: 30 }"></datetimepicker>
 </script>
 
+<ion-view title="Boga Delivery">
 <ion-content style="background-color:#eee">
 
-<div class="row" style="font-size:12px">
+<div class="row" style="font-size:11px">
 	<div class="col col-33" style="border-right:1px solid #bdbdbd">
 		<strong style="font-size:14px">{{totalItems}}</strong><br/>
 		items in your order
@@ -16,24 +17,21 @@
 	</div>
 </div>
 
-<ion-list show-delete="shouldShowDelete">
-	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:15px;padding:0 !important">
-		<div class="row">
-			<div class="col col-10">
-				{{item.qty}}x 
-			</div>
-			<div class="col">
+<ion-list>
+	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:12px;padding:0">
+			{{item.qty}}x 
+			
 				{{item.menu_name}} <span ng-show="item.size_id">({{item.size_id.size_name}})</span>
 
-				<div ng-repeat = "att in item.attr" style="font-style:italic;font-size:14px">
-					+ {{att.attribute_name}}
+				<div ng-repeat = "att in item.attr" style="font-style:italic;font-size:12px">
+					+ {{item.qty}} {{att.attribute_name}} | {{ item.qty*att.attribute_price | currency : ''}}
 				</div>
-				<div style="font-size:14px">
-					{{item.menu_price | currency : 'Rp ' : 0}}
+				<div style="font-weight:bold">
+					{{item.menu_price * item.qty | currency : 'Rp ' : 0}}
 				</div>
-			</div>
+			
 		</div>
-		<ion-option-button class="button button-positive" ng-click="editItem($index)">
+		<ion-option-button class="button button-positive" ng-click="editItem($index)" style="padding:0">
 	     	<i class="ion-close-round"></i>
 	    </ion-option-button>
 	    <ion-option-button class="button button-info" ng-click="deleteItem($index)">
@@ -41,27 +39,27 @@
 	    </ion-option-button>
 	</ion-item>
 
-	<ion-item style="padding:0">
+	<ion-item style="padding:0;font-size:12px">
 		<div class="row">
 			<div class="col col-10">
 			 	
 			</div>
 			<div class="col">
 				Tax &amp; Service Charge
-				<div style="font-size:14px">
+				<div style="font-weight:bold">
 					{{tax_service_charge * totalPrice / 100 | currency : 'Rp ' : 0}}
 				</div>
 			</div>
 		</div>
 	</ion-item>
 
-	<ion-item style="padding:0">
+	<ion-item style="padding:0;font-size:12px">
 		<div class="row">
 			<div class="col col-10">
 			 </div>
 			<div class="col">
 				Delivery Fee
-				<div style="font-size:14px">
+				<div style="font-weight:bold">
 					{{delivery_fee | currency : 'Rp ' : 0}}
 				</div>
 			</div>
@@ -69,18 +67,23 @@
 	</ion-item>
 </ion-list>
 <div class="card">
-	<div class="item item-text-wrap">
-	{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}
+	<div class="item item-text-wrap" style="text-align:center">
+		<span ng-if="data.datetimetype == 1">Immediate - ASAP</span>
+		<span ng-if="data.datetimetype == 2">Future - {{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}</span>
 	</div>
 </div>
+
 <div class="button-bar" style="margin-top:25px">
-	<a class="button" ng-click="showPopup()">
-	Delivery Time
+	<a class="button button-dark" ng-click="showPopup()">
+		Delivery Time
 	</a>
 
-	<a class="button">
-	Checkout
+	<a class="button button-assertive" href="#/">
+		Checkout
 	</a>
 </div>
 
+<div style="height:50px;width:100%"></div>
+
 </ion-content>
+</ion-view>

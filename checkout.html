@@ -3,6 +3,7 @@
    	<datetimepicker data-ng-model="data.datetime" min-date="minDate" show-weeks="true" data-datetimepicker-config="{ minuteStep: 30 }"></datetimepicker>
 </script>
 
+<ion-view title="Boga Delivery">
 <ion-content style="background-color:#eee">
 
 <div class="row" style="font-size:12px">
@@ -19,7 +20,7 @@
 <ion-list show-delete="shouldShowDelete">
 	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:15px">
 		<div class="row">
-			<div class="col col-10">
+			<div class="col col-20">
 				{{item.qty}}x 
 			</div>
 			<div class="col">
@@ -80,3 +81,4 @@
 </div>
 
 </ion-content>
+</ion-view>

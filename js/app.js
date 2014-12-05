@@ -46,16 +46,31 @@ app.config(function($urlRouterProvider){
     $urlRouterProvider.when('', '/');
 });
 
-app.run(function($rootScope,$ionicSideMenuDelegate){
+app.run(function($rootScope,$ionicNavBarDelegate,$ionicSideMenuDelegate,$ionicPopover){
 	$rootScope.toggleLeft = function() {
 		$ionicSideMenuDelegate.toggleLeft();
 	};
-	
+
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 		if(toState.name == 'home')
 			$rootScope.onHome = true;
 		else
 			$rootScope.onHome = false;
+	});
+
+	$ionicPopover.fromTemplateUrl('popover-account.html', function(popover) {
+	    $rootScope.popover = popover;
+	});
+	  
+	$rootScope.openPopover = function($event) {
+    	$rootScope.popover.show($event);
+	};
+	$rootScope.closePopover = function() {
+	    $rootScope.popover.hide();
+	};
+	  //Cleanup the popover when we're done with it!
+	$rootScope.$on('$destroy', function() {
+	    $rootSscope.popover.remove();
 	});
 });
 
@@ -66,9 +81,13 @@ app.directive('backButton', function(){
       link: function(scope, element, attrs) {
         element.bind('click', goBack);
 
-        function goBack() {
+        function goBack(e) {
+
           history.back();
           scope.$apply();
+          e.stopPropagation();
+          e.preventDefault();
+          return false;
         }
       }
     }
@@ -133,10 +152,14 @@ app.controller('restoCtrl',function($scope,$stateParams,$http){
 });
 
 app.controller('searchCtrl',function($scope,$stateParams,$http,Search){
+
 	var urlLogin = url + "/search.php?outlet_id="+Search.getAll().replace("[","").replace("]","")+"&callback=JSON_CALLBACK";
+	console.log(urlLogin);
 	$http.jsonp(urlLogin)
 		.success(function(data) {
+
 			$scope.outlets = data.outlet;
+			console.log($scope.outlets);
 		});
 });
 

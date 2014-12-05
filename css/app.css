@@ -2,25 +2,14 @@
 	background-color:#c41920;
 	border-color:#c41920;
 }
-.navbar-header {
-	color:#fff;
-	font-family:Arial,Helvetica;
-	font-size:16px;
-	line-height:48px;
-	font-weight:bold;
-}
-.navbar-brand {
-	padding:10px;
+.navbar .title {
 	color:#fff;
 }
-.navbar-icon {
+.icon-header {
 	color:#fff;
-	cursor:pointer;
 	font-size:20px;
-}
-.navbar-icon img {
-	vertical-align:text-bottom;
-	margin-left:-6px;
+	line-height:30px;
+	cursor:pointer;
 }
 .login {
 	background-color:#c41920;
@@ -199,4 +188,32 @@
 	left:0 !important;
 	text-align:left;
 	font-size:14px !important;
+}
+
+#panelList {
+	padding:5px 10px;
+}
+#panelList a{
+	background-color:#585858;
+	color:#bebebe;
+	border:0;
+	border-bottom:1px solid #3d3d3d;
+	font-weight:bold;
+	margin-top:10px;
+	box-shadow:0px 1px 0px #777;
+	cursor:pointer;
+}
+#panelList a:first-child {
+	margin-top:-20px !important;
+}
+#panelList2 {
+	padding:0px 10px;
+	margin-top:-20px;
+}
+#panelList2 a {
+	border:none;
+	background-color:#585858;
+	color:#bebebe;
+	font-weight:bold;
+	font-size:14px;
 }

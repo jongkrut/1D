@@ -23,37 +23,55 @@
 
 <body ng-app="indexApp">
 
-
 <ion-side-menus >
     <ion-side-menu-content drag-content="false">
-    	<ion-header-bar  class="navbar">
-			<a class="navbar-icon" back-button ng-hide="onHome">
-				<i class="ion-arrow-left-b"></i>
-				<img alt="Brand" src="img/boga_icon.png" style="height:30px;width:auto;"> 
-			</a>
+   
+		<ion-nav-bar class="navbar">
+			<ion-nav-back-button class="button-clear" ng-hide="onHome">
+		    	<i class="ion-arrow-left-b icon-header"></i> 
+			</ion-nav-back-button>
 			<a class="navbar-icon" ng-click="toggleLeft()" ng-show="onHome">
-				<i class="ion-navicon"></i>
-				<img alt="Brand" src="img/boga_icon.png" style="height:30px;width:auto;"> 
+				<i class="ion-navicon icon-header"></i>
 			</a>
-  
-		  	<h1 class="title navbar-header">Boga Delivery</h1>
-			
-			
-		</ion-header-bar>
-		
+			<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;"> 
+
+			<ion-nav-buttons side="right">
+		    	<button class="button-clear" ng-click="openPopover($event)">
+		       		<i class="ion-person icon-header"></i>
+		      	</button>
+		    </ion-nav-buttons>
+		</ion-nav-bar>
 		<ion-nav-view animation="slide-left-right"></ion-nav-view>
-		
+	
     </ion-side-menu-content>
-    <ion-side-menu side="left" ng-controller="panelCtrl">
-    	This is panel.
+    <ion-side-menu side="left" ng-controller="panelCtrl" style="background-color:#585858">
+    	<div class="list" id="panelList">
+    		<a class="item" href></a>
+    		<a class="item" ng-href="#/map-search" menu-close >
+    			<i class="icon ion-navigate" ></i> Search Restaurants
+    		</a>
+    		<a class="item" href="#/promotions">
+    			<i class="icon ion-star"></i> Promotions
+    		</a>
+    		<a class="item">
+    			<i class="icon ion-help"></i> Problems & Feedback
+    		</a>
+    	</div>
+
+    	<div class="list" id="panelList2">
+    		<a class="item" href="#/cart" menu-close>
+    			How to Order
+    		</a>
+    		<a class="item" href="#/promotions">
+    			FAQ
+    		</a>
+    		<a class="item">
+    			Contact Us
+    		</a>
+    	</div>
     </ion-side-menu>
 </ion-side-menus>
 	
-
-
-
-
 </body>
-
 
 </html>
