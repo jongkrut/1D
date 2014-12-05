@@ -1,6 +1,9 @@
 angular.module('cart',[]).factory('Cart',function(){
 	var cart = {
 		outlet_id : '',
+		tax_service_charge : '',
+		delivery_charge : '',
+		grandtotal : '',
 		init: function(outlet){
 			outlet_id = outlet;
 			if(localStorage.getItem("cart-"+outlet_id) == null)
@@ -27,6 +30,12 @@ angular.module('cart',[]).factory('Cart',function(){
 			}
 			return total;
 		},
+		getTaxCharge:function(){
+			return tax_service_charge;
+		},
+		getDeliveryFee: function(){
+			return delivery_charge;
+		},
 		addItem: function(item) {
 			var items = JSON.parse(localStorage.getItem("cart-"+outlet_id));
 			items.push(item);
@@ -36,6 +45,10 @@ angular.module('cart',[]).factory('Cart',function(){
 			var items = JSON.parse(localStorage.getItem("cart-"+outlet_id));
 			items.splice(index,1);
 			localStorage.setItem("cart-"+outlet_id,JSON.stringify(items));
+		},
+		updatePrice : function(tsc,delfee){
+			tax_service_charge = tsc;
+			delivery_charge = delfee;
 		}
 	}
 	return cart;

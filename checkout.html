@@ -11,13 +11,13 @@
 		items in your order
 	</div>
 	<div class="col">
-		<strong style="font-size:14px">{{grandtotal | currency : 'Rp ' : 0}}</strong><br/>
+		<strong style="font-size:14px">{{totalPrice | currency : 'Rp ' : 0}}</strong><br/>
 		total order amount incl. additional fees
 	</div>
 </div>
 
 <ion-list show-delete="shouldShowDelete">
-	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:15px;padding:0 !important">
+	<ion-item ng-repeat="item in items" class="item-text-wrap" style="width:100%;font-size:15px">
 		<div class="row">
 			<div class="col col-10">
 				{{item.qty}}x 
@@ -41,7 +41,7 @@
 	    </ion-option-button>
 	</ion-item>
 
-	<ion-item style="padding:0">
+	<ion-item>
 		<div class="row">
 			<div class="col col-10">
 			 	
@@ -49,30 +49,26 @@
 			<div class="col">
 				Tax &amp; Service Charge
 				<div style="font-size:14px">
-					{{tax_service_charge * totalPrice / 100 | currency : 'Rp ' : 0}}
+					14314
 				</div>
 			</div>
 		</div>
 	</ion-item>
 
-	<ion-item style="padding:0">
+	<ion-item>
 		<div class="row">
 			<div class="col col-10">
 			 </div>
 			<div class="col">
 				Delivery Fee
 				<div style="font-size:14px">
-					{{delivery_fee | currency : 'Rp ' : 0}}
+					14314
 				</div>
 			</div>
 		</div>
 	</ion-item>
 </ion-list>
-<div class="card">
-	<div class="item item-text-wrap">
 	{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}
-	</div>
-</div>
 <div class="button-bar" style="margin-top:25px">
 	<a class="button" ng-click="showPopup()">
 	Delivery Time

@@ -35,6 +35,10 @@ app.config(['$stateProvider', function($stateProvider) {
 						url : '/cart/:outlet_id/:brand_id',
 						templateUrl : 'cart.html',
 						controller : 'cartCtrl'
+	}).state('checkout', { 
+						url : '/checkout/:outlet_id/:brand_id',
+						templateUrl : 'checkout.html',
+						controller : 'checkoutCtrl'
 	});	
 }]);
 
@@ -368,6 +372,9 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location) 
 app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
+	$scope.data = {};
+	$scope.data.datetimetype = 1;
+	$scope.data.datetime = new Date();
 	Cart.init($scope.outlet_id);
 	$scope.items = Cart.getAll();
 	var totalItems = Cart.getTotalItems();
@@ -392,7 +399,12 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicL
 	$scope.totalItems = totalItems;
 
 	var urlz = url + "/getFees.php?outlet_id="+$scope.outlet_id+"&brand_id="+$scope.brand_id+"&callback=JSON_CALLBACK";
-	
+	$http.jsonp(urlz).success(function(data){
+		$scope.tax_service_charge = data.charge.tax_service_charge;
+		$scope.delivery_fee = data.charge.delivery_fee;
+		Cart.updatePrice($scope.tax_service_charge,$scope.delivery_fee);
+		$scope.grandtotal = ($scope.totalPrice*$scope.tax_service_charge/100) + $scope.totalPrice + $scope.delivery_fee;
+	});
 
 	$scope.editItem = function(index) {
 
@@ -408,15 +420,14 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicL
 
 
 	$scope.showPopup = function() {
-		$scope.data = {};
-		$scope.data.datetimetype = 1;
-		$scope.data.datetime = new Date();
+		
+		
 		var myPopup = $ionicPopup.show({
 		    templateUrl: 'datetime-template.html',
 		    title: 'Please Select Date and Time',
 		    scope: $scope,
 		    buttons: [
-		    	{ text: 'Cancel',
+		    	{ text: 'Immediate',
 		    	  onTap: function(e) {
 		    		$scope.data.datetimetype = 1;
 		    	  	$scope.data.datetime = new Date();
@@ -432,4 +443,10 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicL
 		    ]
 		});
  	};
+});
+
+app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
+	$scope.outlet_id = $stateParams.outlet_id;
+	$scope.brand_id = $stateParams.brand_id;
+	Cart.init($scope.outlet_id);
 });
