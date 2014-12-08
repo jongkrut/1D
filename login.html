@@ -1,15 +1,43 @@
-<div id="home_container">
-<div style="width:100%;float:left;text-align:center;">
-	<img src="img/boga_logo.png" style="width:200px"/>
+<ion-view title="Boga Delivery">
+
+<ion-nav-bar class="navbar">
+	<ion-nav-buttons side="left">
+		<button class="button-clear" ng-click="goBack()">
+			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:50%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+		</button>
+	</ion-nav-buttons>
+	
+	
+	<ion-nav-buttons side="right">
+		<button class="button-clear" ng-click="openPopover($event)" ng-show="logged_in">
+			<i class="ion-person icon-header"></i>
+		</button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+
+
+<ion-content style="background-color:#eee">
+
+<div class="card  list-inset">
+	<label class="item item-input">
+		<input type="text" class="form-control" placeholder="Username" ng-model="user.email"/>
+	</label>
+	<label class="item item-input">
+		<input type="password" class="form-control" placeholder="Password" ng-model="user.password"/>
+	</label>
+	<div class="button-bar">
+		<button class="button button-clear" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Forgot?</button>
+		<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="doLogin(user)">Login</button>
+	</div>
 </div>
 
-<div class="container-fluid" ng-show="login_front">
-	<div class="rows">
-		<div class="col-xs-8 col-xs-offset-2 container-login">
-			<button class="btn btn-lg login btn-block" ng-click="doLogin()">Login</button><br/>
-			Don't have an account?
-			<button class="btn btn-lg signup btn-block">Signup</button>
-		</div>
+<div class="card" style="text-align:center;">
+	<div class="padding" style="line-height:28px">
+		<span style="color:#c41920;font-weight:bold;font-size:15px">Don't have an account?</span><br/>
+		Sign up now, it's easy!
+	</div>
+	<div class="button-bar" style="border-top:1px solid #bebebe">
+			<button class="button button-clear" style="color:#c41920;font-weight:bold">Sign Up</button>
 	</div>
 </div>
 
@@ -26,14 +54,8 @@
 	</div>
 </div>
 
-<div class="container-fluid" ng-show="login_signup">
-	<div class="rows">
-		<div class="col-xs-8 col-xs-offset-2 container-login">
-			<form>
-				<input type="text" class="form-control" placeholder="Username" />
-				<input type="password" class="form-control" placeholder="Password"/>
-			</form>
-		</div>
-	</div>
-</div>
-</div>
+
+
+
+</ion-content>
+</ion-view>

@@ -86,29 +86,22 @@ angular.module('search',[]).factory('Search',function(){
 
 angular.module('customer',[]).factory('Customer',function(){
 	var cart = {
-		items : '',
-		latitude : '',
-		longitude : '',
-		init: function(){
-			localStorage.setItem("search",JSON.stringify([]));
+		customer : '',
+		address : '',
+		init: function(customer){
+			localStorage.setItem("customer",JSON.stringify(customer));
 		},
-		getAll: function(){
-			return localStorage.getItem("search");
+		getCustomer: function() {
+			return JSON.parse(localStorage.getItem("customer"));
 		},
-		addOutlet: function(outlet) {
-			var items = JSON.parse(localStorage.getItem("search"));
-			items.push(outlet);
-			localStorage.setItem("search",JSON.stringify(items));
+		logout: function(){
+			localStorage.removeItem("customer");
 		},
-		remove: function(){
-			localStorage.setItem("search",JSON.stringify([]));
-		},
-		addLoc: function(lat,lng) {
-			latitude = lat;
-			longitude = lng;
-		},
-		getLoc : function() {
-			return latitude + "," + longitude;
+		isLogged : function(){
+			if(localStorage.getItem("customer") == null)
+				return false;
+			else
+				return true;
 		}
 	}
 	return cart;

@@ -1,9 +1,39 @@
 <script id="datetime-template.html" type="text/ng-template">
-	<div style="text-align:center;width:100%">{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}</div>
-   	<datetimepicker data-ng-model="data.datetime" min-date="minDate" show-weeks="true" data-datetimepicker-config="{ minuteStep: 30 }"></datetimepicker>
+	<ion-modal-view>
+		<ion-header-bar>
+			<h1 class="title">Please Select Date and Time</h1>
+		</ion-header-bar>
+    <ion-content>
+		<div style="text-align:center;width:100%;padding:10px 0;">{{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}</div>
+		<datetimepicker data-ng-model="data.datetime" min-date="minDate" show-weeks="true" data-datetimepicker-config="{ minuteStep: 30 }"></datetimepicker>
+		<div class="button-bar" style="margin-top:20px">
+			<button ng-click="closeModal()" class="button button-calm">Immediate</button>
+			<button ng-click="saveModal()" class="button button-balanced">Save Future</button>
+		</div>
+    </ion-content>
+  </ion-modal-view>  	
 </script>
 
 <ion-view title="Boga Delivery">
+
+<ion-nav-bar class="navbar">
+	<ion-nav-back-button class="button-clear">
+		<i class="ion-arrow-left-b" style="color:#fff"></i>	
+	</ion-nav-back-button>
+	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+	
+
+	<ion-nav-buttons side="right">
+		<a href="#/login" class="button-clear" ng-hide="logged_in" style="text-decoration:none">
+			<i class="ion-person icon-header"> Login</i>
+		</a>
+			
+		<button class="button-clear" ng-click="openPopover($event)" ng-show="logged_in">
+			<i class="ion-person icon-header"></i>
+		</button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+
 <ion-content style="background-color:#eee">
 
 <div class="row" style="font-size:11px">
@@ -74,7 +104,7 @@
 </div>
 
 <div class="button-bar" style="margin-top:25px">
-	<a class="button button-dark" ng-click="showPopup()">
+	<a class="button button-dark" ng-click="openModal()">
 		Delivery Time
 	</a>
 

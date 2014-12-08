@@ -143,6 +143,7 @@
     -moz-border-radius: 4px;
     border-radius: 4px;
     border: none;
+	padding:5px;
 }
 .datetimepicker .table-striped > tbody > tr:nth-child(odd) > td, .datetimepicker .table-striped > tbody > tr:nth-child(odd) > td,
 .datetimepicker .table-striped > tbody > tr:nth-child(odd) > td, .datetimepicker .table-striped > tbody > tr:nth-child(odd) > th {
@@ -405,6 +406,12 @@
     font-weight:bold;
 }
 
-.datetimepicker table thead th {
-    width:10%;
+.datetimepicker table thead th.left,.datetimepicker table thead th.right  {
+    width:15% !important;
+	font-size:20px;
+}
+
+.datetimepicker table thead th.switch {
+    width:70% !important;
+	font-size:13px;
 }

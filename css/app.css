@@ -7,7 +7,7 @@
 }
 .icon-header {
 	color:#fff;
-	font-size:20px;
+	font-size:15px;
 	line-height:30px;
 	cursor:pointer;
 }
@@ -143,10 +143,6 @@
 	height:225px;
 	border-radius:225px;
 	background-color:#fff;
-	clear:both;
-	position:relative;
-	left:50%;
-	transform:translate(-50%,0);
 	color:#c41920;
 	text-align: center;
 }
@@ -156,18 +152,36 @@
 	border-radius: 135px;
 	background-color: #c41920;
 	font-size:64px;
-	float:left;
 	line-height:150px;
-	position:relative;
 	text-align: left;
 	padding-left:35px;
 	margin-top:15px;
 	color:#fff;
-    left:50%;
     cursor: pointer;
-    transform:translate(-50%,0);
+	margin-left:45px;
 }
 .find_loc {
+	margin-top:15px;
+	width:100%;
+	text-align:center;
+	-webkit-box-align: center;
+	-moz-box-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+	display: -webkit-flex;
+    display: flex;
+	display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+	-webkit-box-pack: center;
+	-moz-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.find_loc1 {
 	margin-top:15px;
 	width:200px;
 	float:left;

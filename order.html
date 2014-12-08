@@ -40,14 +40,34 @@
 </script>
 
 <ion-view title="Boga Delivery">
+
+<ion-nav-bar class="navbar">
+	<ion-nav-buttons side="left">
+		<button class="button-clear" ng-click="goBack()">
+			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:50%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+		</button>
+	</ion-nav-buttons>
+	
+
+	<ion-nav-buttons side="right">
+		<a href="#/login" class="button-clear" ng-hide="logged_in" style="text-decoration:none">
+			<i class="ion-person icon-header"> Login</i>
+		</a>
+			
+		<button class="button-clear" ng-click="openPopover($event)" ng-show="logged_in">
+			<i class="ion-person icon-header"></i>
+		</button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+
 <ion-content style="background-color:#fff">
 
 <div class="bar-subheader" style="padding:0;margin-top:0px">
-<ion-scroll direction="x" style="width:100%;overflow:scroll;white-space:nowrap;height:50px;line-height:50px">
-        <div class="nav-cat" ng-repeat="category in menuCategories" ng-class="{active:tab===category.category_id}"> 
+	<ion-scroll direction="x" style="width:100%;overflow:scroll;white-space:nowrap;height:50px;line-height:50px">
+        <div class="nav-cat" ng-repeat="category in menuCategories" ng-class="{active:tab==category.category_id}"> 
     		<a href="" data-toggle="tab" ng-click="loadMenu(category.category_id)">{{category.category_name}} </a>
     	</div>
-</ion-scroll>
+	</ion-scroll>
 </div>
 
 <div ng-repeat="category in menuCategories" ng-show="tab == category.category_id">

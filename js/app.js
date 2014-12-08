@@ -4,6 +4,7 @@ var app = angular.module('indexApp', [
   "cart",
   "search",
   "ionic",
+  "customer",
   "ui.bootstrap.datetimepicker"
 ]);
 
@@ -24,11 +25,11 @@ app.config(['$stateProvider', function($stateProvider) {
 						templateUrl : 'search.html',
 						controller : 'searchCtrl'
 	}).state('restaurant', { 
-						url : '/restaurant/:outlet_id',
+						url : '/restaurant/:outlet_id/:brand_id',
 						templateUrl : 'restaurant.html',
 						controller : 'restoCtrl'
 	}).state('order', { 
-						url : '/order/:outlet_id/:brand_id',
+						url : '/order/:outlet_id/:brand_id/:as',
 						templateUrl : 'order.html',
 						controller : 'orderCtrl'
 	}).state('cart', { 
@@ -46,9 +47,13 @@ app.config(function($urlRouterProvider){
     $urlRouterProvider.when('', '/');
 });
 
-app.run(function($rootScope,$ionicNavBarDelegate,$ionicSideMenuDelegate,$ionicPopover){
+app.run(function($rootScope,$ionicNavBarDelegate,$ionicSideMenuDelegate,$ionicPopover,$location){
 	$rootScope.toggleLeft = function() {
 		$ionicSideMenuDelegate.toggleLeft();
+	};
+	
+	$rootScope.goBack = function() {
+		$ionicNavBarDelegate.back();
 	};
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
@@ -68,29 +73,10 @@ app.run(function($rootScope,$ionicNavBarDelegate,$ionicSideMenuDelegate,$ionicPo
 	$rootScope.closePopover = function() {
 	    $rootScope.popover.hide();
 	};
-	  //Cleanup the popover when we're done with it!
 	$rootScope.$on('$destroy', function() {
 	    $rootSscope.popover.remove();
 	});
-});
-
-app.directive('backButton', function(){
-    return {
-      restrict: 'A',
-
-      link: function(scope, element, attrs) {
-        element.bind('click', goBack);
-
-        function goBack(e) {
-
-          history.back();
-          scope.$apply();
-          e.stopPropagation();
-          e.preventDefault();
-          return false;
-        }
-      }
-    }
+	
 });
 
 app.controller('panelCtrl',function($scope,$location){
@@ -98,17 +84,8 @@ app.controller('panelCtrl',function($scope,$location){
 });
 
 app.controller('loginCtrl',function($scope,$http,$location){
-	$scope.url = url;
-	$scope.login_front = true;
-	$scope.login_login = false;
-	$scope.login_signup = false;
-	$scope.login = {};
-	$scope.signup = {};
-	$scope.doLogin = function () {
-		$scope.login_front = false;
-		$scope.login_login = true;
-    };
-	$scope.doSignin = function(customer) {
+	$scope.doLogin = function (user) {
+	/*
 		var urlLogin = url + "/login.php?callback=JSON_CALLBACK";
 		$http.jsonp(urlLogin)
 			.success(function(data) {
@@ -116,22 +93,32 @@ app.controller('loginCtrl',function($scope,$http,$location){
 				
 					$location.path('/home/');
 				}
-		});
+		});*/
+    };
+	$scope.doSignin = function(customer) {
+		
 	};
     $scope.doSignUp = function () {
 		
     };
 });
 
-app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate){
+app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,Customer){
+	$scope.logged_in = Customer.isLogged();
+	
 	$scope.onHome = true;
     $scope.toMap = function(){
 		$location.path('/map-search');
     };
+	$scope.goLogin1 = function() {
+		$location.path('/login');
+		
+	};
 });
 
 app.controller('restoCtrl',function($scope,$stateParams,$http){
 	$scope.outlet_id = $stateParams.outlet_id;
+	$scope.brand_id = $stateParams.brand_id;
 	var urlLogin = url + "/outletInfo.php?outlet_id="+$scope.outlet_id+"&callback=JSON_CALLBACK";
 	$http.jsonp(urlLogin)
 	    .success(function(data) {
@@ -152,21 +139,18 @@ app.controller('restoCtrl',function($scope,$stateParams,$http){
 });
 
 app.controller('searchCtrl',function($scope,$stateParams,$http,Search){
-
 	var urlLogin = url + "/search.php?outlet_id="+Search.getAll().replace("[","").replace("]","")+"&callback=JSON_CALLBACK";
-	console.log(urlLogin);
 	$http.jsonp(urlLogin)
 		.success(function(data) {
-
 			$scope.outlets = data.outlet;
-			console.log($scope.outlets);
+//			console.log($scope.outlets);
 		});
 });
 
 app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$ionicLoading,$location){
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
-	$scope.tab = 0;
+	$scope.tab = $stateParams.as;
 	$scope.menuz = [];
 	$scope.menu = {};
 	var arrayLoaded = [];
@@ -179,10 +163,17 @@ app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$
 	$scope.hide = function(){
 	    $ionicLoading.hide();
 	};
-
+	
+	
 	var urlLogin = url + "/outletMenuCategory.php?brand_id="+$scope.brand_id+"&callback=JSON_CALLBACK";
+	$http.jsonp(urlLogin).success(function(data){
+		$scope.menuCategories = data.category;
+		urlLogin = url + "/outletMenu.php?category_id="+$scope.tab+"&callback=JSON_CALLBACK";
 		$http.jsonp(urlLogin).success(function(data){
-				$scope.menuCategories = data.category;
+			$scope.menuz[$scope.tab] =data.menu;
+			arrayLoaded.push($scope.tab);
+			$scope.menus = $scope.menuz[$scope.tab];
+		});
 	});
 	$scope.loadMenu = function(a) {
 		$scope.tab = a;
@@ -392,7 +383,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location) 
 });
 
 
-app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
+app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicLoading,Cart,$location) {
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
 	$scope.data = {};
@@ -441,31 +432,29 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicL
 			$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id);
 	};
 
+	$ionicModal.fromTemplateUrl('datetime-template.html', {
+	  	scope: $scope,
+	  	animation: 'slide-in-up'
+	}).then(function (modal) {
+		$scope.modal = modal;	
+	});
 
-	$scope.showPopup = function() {
-		
-		
-		var myPopup = $ionicPopup.show({
-		    templateUrl: 'datetime-template.html',
-		    title: 'Please Select Date and Time',
-		    scope: $scope,
-		    buttons: [
-		    	{ text: 'Immediate',
-		    	  onTap: function(e) {
-		    		$scope.data.datetimetype = 1;
-		    	  	$scope.data.datetime = new Date();
-		    	  }
-		  		},
-		      	{ text: '<b>Save</b>',
-		        	type: 'button-positive',
-		        	onTap: function(e) {
-		        		$scope.data.datetimetype = 2;
-		        		return $scope.data.datetime;
-		        	}
-		        },
-		    ]
-		});
- 	};
+	$scope.$on('$destroy', function () {
+		$scope.modal.remove();
+	});
+	
+	$scope.openModal = function (){
+		$scope.modal.show();
+  	};
+  	$scope.closeModal = function() {
+		$scope.data.datetimetype = 1;
+		$scope.data.datetime = new Date();
+    	$scope.modal.hide();
+  	};
+	$scope.saveModal = function() {
+		$scope.data.datetimetype = 2;
+    	$scope.modal.hide();
+  	};
 });
 
 app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
