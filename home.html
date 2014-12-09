@@ -23,7 +23,33 @@
 	<div style="width:100%;float:left;text-align:center;margin-top:25px;float:left">
 		<img src="img/boga_logo.png" style="width:200px;"/>
 	</div>
-	<div class="find_loc">
+
+
+	<div ng-show="logged_in" ng-hide="newAddress">
+		<div class="find_loc">
+			<div style="width:200px;background-color:#faf7f9;padding:10px;">
+				Welcome Back
+				<br/><br/>
+				<span style="color:#c41920;font-size:20px;font-weight:bold">{{customer.customer_name}}</span>
+				<br/><br/>
+				You are using <button ng-click="openModal()" class="button-clear" style="color:#c41920;font-weight:bold">{{defaultAddress.address_id}}</button> as your current search location.
+			</div>
+		</div>
+		<div class="find_loc">
+			<a class="button button-assertive" style="width:200px;background-color:#c41920;font-size:12px;font-weight:bold" ng-click="toSearch()">
+				<i class="icon ion-marker"></i> Find Restaurants
+			</a>
+		</div>
+		<div class="find_loc">
+			or
+			<br/><br/>
+			<button class="button button-assertive" style="background-color:#666;border-color:#666;width:200px;font-size:12px;font-weight:bold" ng-click="newAddress=true">
+				<i class="icon ion-marker"></i> Create New Address
+			</button>
+		</div>
+	</div>
+
+	<div class="find_loc" ng-show="newAddress">
 		<div class="find_circle">
 			<div class="find_nearby" ng-click="toMap()">
 				<i class="icon ion-navigate"></i>
@@ -33,7 +59,7 @@
 			Restaurant</div>
 		</div>
 	</div>
-	<div class="find_loc">
+	<div class="find_loc" ng-show="newAddress">
 		or
 		<br/><br/>
 		<button class="button button-assertive" style="background-color:#c41920;font-size:12px;font-weight:bold"><i class="icon ion-marker"></i> Tell us your location</button>
@@ -47,3 +73,28 @@
 
 </ion-content>
 </ion-view>
+
+
+<script id="chooseAddress-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Choose Your Address</h1>
+    </ion-header-bar>
+    <ion-content>
+    	<div class="list">
+      	<ion-radio ng-repeat="item in addresses"
+                   ng-value="$index"
+                   ng-model="data.selected"       
+                   name="server-side">
+          {{ item.address_content }}
+       	</ion-radio>
+       	</div>
+    </ion-content>
+    <ion-footer-bar>
+    	<div class="button-bar">
+    		<button class="button button-calm" ng-click="closeModal()">Cancel</button>
+    		<button class="button button-balanced" ng-click="applyModal()">OK</button>
+    	</div>
+    </ion-footer-bar>
+  </ion-modal-view>
+</script>

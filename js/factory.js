@@ -61,6 +61,8 @@ angular.module('search',[]).factory('Search',function(){
 		longitude : '',
 		init: function(){
 			localStorage.setItem("search",JSON.stringify([]));
+			localStorage.setItem("latitude","");
+			localStorage.setItem("longitude","");
 		},
 		getAll: function(){
 			return localStorage.getItem("search");
@@ -74,28 +76,54 @@ angular.module('search',[]).factory('Search',function(){
 			localStorage.setItem("search",JSON.stringify([]));
 		},
 		addLoc: function(lat,lng) {
-			latitude = lat;
-			longitude = lng;
+			localStorage.setItem("latitude",lat);
+			localStorage.setItem("longitude",lng);
 		},
-		getLoc : function() {
-			return latitude + "," + longitude;
+		getLat : function() {
+			return localStorage.getItem("latitude");
+		},
+		getLng : function(){
+			return localStorage.getItem("longitude");
 		}
 	}
 	return cart;
 });
 
-angular.module('customer',[]).factory('Customer',function(){
+angular.module('customer',[]).factory('Customer',function($rootScope){
 	var cart = {
 		customer : '',
 		address : '',
 		init: function(customer){
 			localStorage.setItem("customer",JSON.stringify(customer));
 		},
+		setAddress: function(address) {
+			localStorage.setItem("customer_address",JSON.stringify(address));
+		},
 		getCustomer: function() {
 			return JSON.parse(localStorage.getItem("customer"));
 		},
+		getAddress: function() {
+			return JSON.parse(localStorage.getItem("customer_address"));
+		},
+		getAddressByID:function(index){
+			var address = JSON.parse(localStorage.getItem("customer_address"));
+			return address[index];
+		},
+		getDefaultAddress : function(){
+			address = JSON.parse(localStorage.getItem("customer_address"));
+			var addr = "";
+			for(var i = 0; i < address.length;i++){
+				if(address[i].default_address == 1) {
+					addr = address[i];
+					break;
+				}
+			}
+			return addr;
+		},
 		logout: function(){
 			localStorage.removeItem("customer");
+			localStorage.removeItem("customer_address");
+			$rootScope.$broadcast('state.update');
 		},
 		isLogged : function(){
 			if(localStorage.getItem("customer") == null)

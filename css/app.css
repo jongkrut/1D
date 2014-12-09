@@ -231,3 +231,18 @@
 	font-weight:bold;
 	font-size:14px;
 }
+input.ng-pristine.ng-invalid-required.ng-invalid {
+	border: 0 !important;
+	outline:0;
+	box-shadow:none;
+}
+input.ng-dirty.ng-invalid-required.ng-invalid {
+  	border: 1px solid red;
+}
+input.ng-valid.ng-touched{
+ 	 border: 1px solid green;
+}
+
+.field-error {
+    border-bottom: 2px solid red;
+}

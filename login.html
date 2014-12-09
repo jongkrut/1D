@@ -18,44 +18,50 @@
 
 <ion-content style="background-color:#eee">
 
-<div class="card  list-inset">
-	<label class="item item-input">
-		<input type="text" class="form-control" placeholder="Username" ng-model="user.email"/>
-	</label>
-	<label class="item item-input">
-		<input type="password" class="form-control" placeholder="Password" ng-model="user.password"/>
-	</label>
-	<div class="button-bar">
-		<button class="button button-clear" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Forgot?</button>
-		<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="doLogin(user)">Login</button>
-	</div>
-</div>
+	<div class="card padding assertive" ng-show="errorLogin==1">Invalid Username or Password</div>
 
-<div class="card" style="text-align:center;">
-	<div class="padding" style="line-height:28px">
-		<span style="color:#c41920;font-weight:bold;font-size:15px">Don't have an account?</span><br/>
-		Sign up now, it's easy!
+	<div class="card list-inset">
+		<form name="signin">
+		<label class="item item-input">
+			<input type="text" placeholder="Username" name="email" ng-model="user.email" required />
+		</label>
+		<label class="item item-input">
+			<input type="password" placeholder="Password" ng-model="user.password" />
+		</label>
+		<div class="button-bar">
+			<button class="button button-clear" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Forgot?</button>
+			<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="doLogin(user)">Login</button>
+		</div>
+		</form>
 	</div>
-	<div class="button-bar" style="border-top:1px solid #bebebe">
-			<button class="button button-clear" style="color:#c41920;font-weight:bold">Sign Up</button>
-	</div>
-</div>
 
-
-<div class="container-fluid" ng-show="login_login">
-	<div class="rows">
-		<div class="col-xs-8 col-xs-offset-2 container-login">
-			<form>
-				<input type="text" class="form-control" placeholder="Username" ng-model="login.cust_email"/><br/>
-				<input type="password" class="form-control" placeholder="Password" ng-model="login.cust_pswd"/><br/>
-				<button type="submit" class="btn btn-primary btn-block" ng-click="doSignin(login)">Login</button>
-			</form>
+	<div class="card" style="text-align:center;">
+		<div class="padding" style="line-height:28px">
+			<span style="color:#c41920;font-weight:bold;font-size:15px">Don't have an account?</span><br/>
+			Sign up now, it's easy!
+		</div>
+		<div class="button-bar" style="border-top:1px solid #bebebe">
+				<button class="button button-clear" style="color:#c41920;font-weight:bold">Sign Up</button>
 		</div>
 	</div>
-</div>
 
-
-
+	<div class="card list-inset">
+		<label class="item item-input">
+			<input type="text" class="form-control" placeholder="Email" ng-model="register.email"/>
+		</label>
+		<label class="item item-input">
+			<input type="password" class="form-control" placeholder="Password" ng-model="register.password"/>
+		</label>
+		<label class="item item-input">
+			<input type="text" class="form-control" placeholder="Phone" ng-model="register.phone"/>
+		</label>
+		<label class="item item-input">
+			<input type="password" class="form-control" placeholder="Mobile" ng-model="register.mobile"/>
+		</label>
+		<div class="button-bar">
+			<button class="button button-clear" ng-click="doSignUp(register)" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Sign Up</button>
+		</div>
+	</div>
 
 </ion-content>
 </ion-view>
