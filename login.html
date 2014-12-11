@@ -20,47 +20,53 @@
 
 	<div class="card padding assertive" ng-show="errorLogin==1">Invalid Username or Password</div>
 
-	<div class="card list-inset">
-		<form name="signin">
-		<label class="item item-input">
-			<input type="text" placeholder="Username" name="email" ng-model="user.email" required />
-		</label>
-		<label class="item item-input">
-			<input type="password" placeholder="Password" ng-model="user.password" />
-		</label>
-		<div class="button-bar">
-			<button class="button button-clear" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Forgot?</button>
-			<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="doLogin(user)">Login</button>
-		</div>
+	<div class="list list-inset" ng-hide="do_login">
+		<form name="signin" novalidate>
+			<label class="item item-input">
+				<input type="email" placeholder="Username" name="email" ng-model="user.email" required />
+			</label>
+			<label class="item item-input">
+				<input type="password" placeholder="Password" ng-model="user.password" required />
+			</label>
+			<div class="button-bar">
+				<button class="button button-clear" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Forgot?</button>
+				<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="doLogin(user)" ng-disabled="signin.$invalid">Login</button>
+			</div>
 		</form>
 	</div>
 
-	<div class="card" style="text-align:center;">
+	<div class="card" style="text-align:center;" ng-hide="do_login">
 		<div class="padding" style="line-height:28px">
 			<span style="color:#c41920;font-weight:bold;font-size:15px">Don't have an account?</span><br/>
 			Sign up now, it's easy!
 		</div>
 		<div class="button-bar" style="border-top:1px solid #bebebe">
-				<button class="button button-clear" style="color:#c41920;font-weight:bold">Sign Up</button>
+				<button class="button button-clear" style="color:#c41920;font-weight:bold" ng-click="do_login=!do_login">Sign Up</button>
 		</div>
 	</div>
 
-	<div class="card list-inset">
-		<label class="item item-input">
-			<input type="text" class="form-control" placeholder="Email" ng-model="register.email"/>
-		</label>
-		<label class="item item-input">
-			<input type="password" class="form-control" placeholder="Password" ng-model="register.password"/>
-		</label>
-		<label class="item item-input">
-			<input type="text" class="form-control" placeholder="Phone" ng-model="register.phone"/>
-		</label>
-		<label class="item item-input">
-			<input type="password" class="form-control" placeholder="Mobile" ng-model="register.mobile"/>
-		</label>
-		<div class="button-bar">
-			<button class="button button-clear" ng-click="doSignUp(register)" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold">Sign Up</button>
-		</div>
+	<div class="card list-inset" ng-show="do_login">
+		<form name="signup" novalidate>
+			<label class="item item-input">
+				<input type="text"  placeholder="Name" ng-model="register.cust_name" required />
+			</label>
+			<label class="item item-input">
+				<input type="email"  placeholder="Email" ng-model="register.email" required />
+			</label>
+			<label class="item item-input">
+				<input type="password" placeholder="Password" ng-model="register.password" required/>
+			</label>
+			<label class="item item-input">
+				<input type="tel" placeholder="Phone" ng-model="register.phone" required/>
+			</label>
+			<label class="item item-input">
+				<input type="tel" placeholder="Mobile" ng-model="register.mobile" required/>
+			</label>
+			<div class="button-bar">
+				<button class="button button-clear" style="color:#c41920;font-weight:bold;border-right:1px solid #bebebe;" ng-click="do_login=!do_login">Login</button>
+				<button class="button button-clear" ng-click="doSignUp(register)" style="border-right:1px solid #bebebe;color:#c41920;font-weight:bold" ng-disabled="signup.$invalid">Sign Up</button>
+			</div>
+		</form>
 	</div>
 
 </ion-content>

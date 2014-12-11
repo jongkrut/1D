@@ -9,10 +9,13 @@ var app = angular.module('indexApp', [
 ]);
 
 app.config(['$stateProvider', function($stateProvider) {
-	$stateProvider.state('login', {
+	$stateProvider.state('login', {	
 					url : '/login',
 					templateUrl : 'login.html',
 					controller : 'loginCtrl'
+	}).state('midlogin', {	url : '/login-mid/:outlet_id/:brand_id',
+							templateUrl : 'login.html',
+							controller : 'midLoginCtrl'
 	}).state('home', { 	url : '/',
 						templateUrl : 'home.html',
 						controller : 'homeCtrl'
@@ -90,26 +93,51 @@ app.controller('panelCtrl',function($scope,$location){
 	
 });
 
-app.controller('loginCtrl',function($scope,$http,$location,Customer){
+app.controller('loginCtrl',function($scope,$http,$location,Customer,Search){
 	$scope.errorLogin = 0;
 	$scope.doLogin = function (user) {
-		var urlLogin = url + "/login.php?user="+user.email+":"+user.password+"&callback=JSON_CALLBACK";
-		$http.jsonp(urlLogin).success(function(data) {
-			if(data.login == 0) {
-				$scope.errorLogin = 1;
-			} 
-			else {
-				var address = data.address;
-				delete data.login;
-				delete data.address;
+			var urlLogin = url + "/login.php?user="+user.email+":"+user.password+"&callback=JSON_CALLBACK";
+			$http.jsonp(urlLogin).success(function(data) {
+				if(data.login == 0) {
+					$scope.errorLogin = 1;
+				} 
+				else {
+					var address = data.address;
+					delete data.login;
+					delete data.address;
 
-				Customer.init(data);
-				Customer.setAddress(address);
-				$scope.errorLogin = 0;
-				$location.path('/');
-			}
+					Customer.init(data);
+					Customer.setAddress(address);
+					$scope.errorLogin = 0;
+					$location.path('/');
+				}
+			});
+    };
+    $scope.doSignUp = function (user) {
+		console.log(user);
+    };
+});
 
-		});
+app.controller('midLoginCtrl',function($scope,$stateParams,$http,$location,Customer,Search){
+	$scope.outlet_id = $stateParams.outlet_id;
+	$scope.brand_id = $stateParams.brand_id;
+	$scope.doLogin = function (user) {
+			var urlLogin = url + "/login.php?user="+user.email+":"+user.password+"&callback=JSON_CALLBACK";
+			$http.jsonp(urlLogin).success(function(data) {
+				if(data.login == 0) {
+					$scope.errorLogin = 1;
+				} 
+				else {
+					var address = data.address;
+					delete data.login;
+					delete data.address;
+
+					Customer.init(data);
+					Customer.setAddress(address);
+					$scope.errorLogin = 0;
+					$location.path('/checkout/'+$scope.outlet_id+'/'+$scope.brand_id);
+				}
+			});
     };
     $scope.doSignUp = function (user) {
 		console.log(user);
@@ -409,6 +437,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 		});
 		var log = 0;
 		Search.remove();
+		Search.addLoc($scope.latitude,$scope.longitude);
 		angular.forEach(areaJson, function(value,key){
 			angular.forEach(value.outlet,function(value1,key1){
 				var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
@@ -446,6 +475,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 		        });
 		        var log = 0;
 		        Search.remove();
+		        Search.addLoc($scope.latitude,$scope.longitude);
 				angular.forEach(areaJson, function(value,key){
 					angular.forEach(value.outlet,function(value1,key1){
 						var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
@@ -549,10 +579,19 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 		$scope.data.datetimetype = 2;
     	$scope.modal.hide();
   	};
+  	$scope.toCheckout = function() {
+  		if(Customer.isLogged()) {
+  			$location.path('/checkout/'+$scope.outlet_id+'/'+$scope.brand_id);
+  		}
+  		else {
+  			$location.path('/login-mid/'+$scope.outlet_id+'/'+$scope.brand_id);
+  		}
+  	};
 });
 
 app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
 	Cart.init($scope.outlet_id);
+	$scope.items = Cart.getAll();
 });

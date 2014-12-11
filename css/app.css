@@ -5,6 +5,9 @@
 .navbar .title {
 	color:#fff;
 }
+.bar .title {
+	overflow:visible;
+}
 .icon-header {
 	color:#fff;
 	font-size:15px;
@@ -134,7 +137,7 @@
 	text-decoration:none;
 }
 .cart-summary-left span, .cart-summary-right span {
-	font-size:12px;
+	font-size:11px;
 	color:#7d7d7d;
 }
 
@@ -232,17 +235,39 @@
 	font-size:14px;
 }
 input.ng-pristine.ng-invalid-required.ng-invalid {
-	border: 0 !important;
-	outline:0;
 	box-shadow:none;
 }
-input.ng-dirty.ng-invalid-required.ng-invalid {
-  	border: 1px solid red;
-}
-input.ng-valid.ng-touched{
- 	 border: 1px solid green;
+input.ng-dirty.ng-invalid {
+	box-shadow:none;
+	border-left:3px solid #f0b840;
 }
 
-.field-error {
-    border-bottom: 2px solid red;
+.table_checkout {
+	width:100%;
+	margin-top:15px;
+}
+
+.table_checkout td:nth-child(odd) {
+	border-right: 1px solid #bdbdbd;
+	width:15px;
+	margin-top:15px;
+}
+
+
+.table_checkout td:nth-child(even) {
+	padding-left:15px;
+}
+
+.sum_steps {
+	width:20px;
+	height:20px;
+	color:#c41920;
+	border-radius: 20px;
+	text-align: center;
+	background-color: #fff;
+	line-height:20px;
+	font-size:14px;
+	float:left;
+	margin-left:5px;
+	margin-right: 10px;
 }

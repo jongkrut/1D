@@ -74,6 +74,8 @@ angular.module('search',[]).factory('Search',function(){
 		},
 		remove: function(){
 			localStorage.setItem("search",JSON.stringify([]));
+			localStorage.setItem("latitude","");
+			localStorage.setItem("longitude","");
 		},
 		addLoc: function(lat,lng) {
 			localStorage.setItem("latitude",lat);
