@@ -255,7 +255,14 @@ input.ng-dirty.ng-invalid {
 
 
 .table_checkout td:nth-child(even) {
-	padding-left:15px;
+	padding-left:0px;
+}
+
+.table_checkout .grand_total {
+	background-color:grey;
+	color:#fff;
+	font-size:14px !important;
+	font-weight:bold;
 }
 
 .sum_steps {
@@ -270,4 +277,7 @@ input.ng-dirty.ng-invalid {
 	float:left;
 	margin-left:5px;
 	margin-right: 10px;
+}
+.list.list-inset.summary li{
+	font-size:12px;
 }

@@ -23,18 +23,25 @@ angular.module('cart',[]).factory('Cart',function(){
 		getTotalPrice: function(){
 			var items = JSON.parse(localStorage.getItem("cart-"+outlet_id));
 			var total = 0;
+			var attr_total = 0;
 			for(var i = 0; i < items.length;i++){
 				if(items[i].size == undefined) {
 					total = total + (parseInt(items[i].qty) * parseInt(items[i].menu_price));
 				}
+				if(items[i].attr !== undefined) {
+					for(var j = 0; j < items[i].attr.length ; j++){
+						attr_total += (parseInt(items[i].qty) * parseInt(items[i].attr[j].attribute_price));
+					}
+					
+				}
 			}
-			return total;
+			return (total+attr_total);
 		},
 		getTaxCharge:function(){
-			return tax_service_charge;
+			return localStorage.getItem("tsc-"+outlet_id);
 		},
 		getDeliveryFee: function(){
-			return delivery_charge;
+			return localStorage.getItem("delfee-"+outlet_id);
 		},
 		addItem: function(item) {
 			var items = JSON.parse(localStorage.getItem("cart-"+outlet_id));
@@ -49,6 +56,8 @@ angular.module('cart',[]).factory('Cart',function(){
 		updatePrice : function(tsc,delfee){
 			tax_service_charge = tsc;
 			delivery_charge = delfee;
+			localStorage.setItem("delfee-"+outlet_id,delfee);
+			localStorage.setItem("tsc-"+outlet_id,tsc);
 		}
 	}
 	return cart;
@@ -59,6 +68,7 @@ angular.module('search',[]).factory('Search',function(){
 		items : '',
 		latitude : '',
 		longitude : '',
+		type : '',
 		init: function(){
 			localStorage.setItem("search",JSON.stringify([]));
 			localStorage.setItem("latitude","");
@@ -76,6 +86,10 @@ angular.module('search',[]).factory('Search',function(){
 			localStorage.setItem("search",JSON.stringify([]));
 			localStorage.setItem("latitude","");
 			localStorage.setItem("longitude","");
+			localStorage.removeItem("search-type");
+		},
+		setType : function(type) {
+			localStorage.setItem("search-type",type);
 		},
 		addLoc: function(lat,lng) {
 			localStorage.setItem("latitude",lat);
@@ -86,6 +100,9 @@ angular.module('search',[]).factory('Search',function(){
 		},
 		getLng : function(){
 			return localStorage.getItem("longitude");
+		},
+		getType : function(){
+			return localStorage.getItem("search-type");
 		}
 	}
 	return cart;

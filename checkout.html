@@ -21,13 +21,35 @@
 
 <table class="table_checkout">
 	<tr>
-		<td colspan=2><div class="sum_steps">1</div> Order Summary
+		<td colspan=2><div class="sum_steps">1</div>Order Summary
+	<tr>
+		<td>			
+		<td>
+			<ul class="list list-inset summary">
+				<li class="item">Order Amount <span style="float:right">{{totalPrice | currency : "Rp "}}</span></li>
+				<li class="item">Tax & Service Charge <span style="float:right">{{tax_service_charge | currency : "Rp "}}</span></li>
+				<li class="item">Delivery Fee<span style="float:right">{{delivery_fee | currency : "Rp "}}</span></li>
+				<li class="item grand_total">Total Order Amount <span style="float:right">{{totalPrice+tax_service_charge+delivery_fee | currency : "Rp "}}</span></li>
+			</ul>
+	<tr>
+		<td colspan=2><br/><div class="sum_steps">2</div>Delivery Instruction
+	<tr>
+		<td>			
+		<td><div class="list list-inset"><div class="item item-input-inset"><textarea></textarea></div></div>
+	<tr>
+		<td colspan=2><br/><div class="sum_steps">3</div>Delivery Address
 	<tr>
 		<td>
-			
 		<td>
-			asdasd
+	<tr>
+		<td colspan=2><br/><div class="sum_steps">4</div>Payment Method
+	<tr>
+		<td>			
+		<td>
+			<div class="card"><div class="item item-text-wrap"><strong>Cash On Delivery</strong></div></div>
 </table>
-
+<div class="padding">
+	<div class="button-bar "><button class="button button-assertive">Place Order</button></div>
+</div>
 </ion-content>
 </ion-view>

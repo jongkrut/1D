@@ -210,6 +210,7 @@ app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,$ioni
 					}				
 				});
 			});
+			Search.setType("1");
 			$scope.hide();
 			$location.path("/search");
 		});
@@ -278,12 +279,14 @@ app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$
 	var urlLogin = url + "/outletMenuCategory.php?brand_id="+$scope.brand_id+"&callback=JSON_CALLBACK";
 	$http.jsonp(urlLogin).success(function(data){
 		$scope.menuCategories = data.category;
-		urlLogin = url + "/outletMenu.php?category_id="+$scope.tab+"&callback=JSON_CALLBACK";
-		$http.jsonp(urlLogin).success(function(data){
-			$scope.menuz[$scope.tab] =data.menu;
-			arrayLoaded.push($scope.tab);
-			$scope.menus = $scope.menuz[$scope.tab];
-		});
+		if($scope.tab !== "") {
+			urlLogin = url + "/outletMenu.php?category_id="+$scope.tab+"&callback=JSON_CALLBACK";
+			$http.jsonp(urlLogin).success(function(data){
+				$scope.menuz[$scope.tab] =data.menu;
+				arrayLoaded.push($scope.tab);
+				$scope.menus = $scope.menuz[$scope.tab];
+			});
+		}
 	});
 	$scope.loadMenu = function(a) {
 		$scope.tab = a;
@@ -379,6 +382,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 	var areaJson = {};
 	$scope.searchInput = false;
 	Search.init();
+	Search.setType("2");
 	$scope.areaCoverage = 0;
 	$scope.latitude = -6.219260;
 	$scope.longitude = 106.812410;
@@ -517,7 +521,7 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 	$scope.items = Cart.getAll();
 	var totalItems = Cart.getTotalItems();
 	if(totalItems == 0)
-		$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id);
+		$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id+"/");
 	
 	var totalPrice = 0;
 	angular.forEach($scope.items,function(value,key){
@@ -551,9 +555,12 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 	$scope.deleteItem = function(index) {
 		Cart.removeItem(index);
 		$scope.items = Cart.getAll();
-		var totalItems = Cart.getTotalItems;
+		var totalItems = Cart.getTotalItems();
+		$scope.totalPrice = Cart.getTotalPrice();
+		$scope.totalItems = totalItems;
 		if(totalItems == 0)
-			$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id);
+			$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id+"/");
+		$scope.grandtotal = ($scope.totalPrice*$scope.tax_service_charge/100) + $scope.totalPrice + $scope.delivery_fee;
 	};
 
 	$ionicModal.fromTemplateUrl('datetime-template.html', {
@@ -589,9 +596,18 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
   	};
 });
 
-app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,$location) {
+app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,Search,$location,Customer) {
+	$scope.logged_in = Customer.isLogged();
+	$scope.$on('state.update', function () {
+    	$scope.logged_in = false;
+    });
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
 	Cart.init($scope.outlet_id);
 	$scope.items = Cart.getAll();
+	$scope.totalPrice = parseInt(Cart.getTotalPrice());
+	$scope.totalItems = Cart.getTotalItems();
+	$scope.tax_service_charge = Cart.getTaxCharge()/100 * $scope.totalPrice;
+	$scope.delivery_fee = parseInt(Cart.getDeliveryFee());
+	$scope.searchType = Search.getType();
 });
