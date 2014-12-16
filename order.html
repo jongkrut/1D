@@ -27,19 +27,21 @@
             <div ng-if="menu.attr.length>0" class="list">
                 <label class="item item-input"> Available Additions</label>
                 <ion-checkbox ng-repeat="att in menu.attr" name="attr_id" id="checkbox_{{$index}}" ng-model="att.selected" value="{{att.attribute_id}}" type="checkbox"/>
-                    {{att.attribute_name}} {{att.attribute_price | currency : 'Rp ' : 0}}
+                    <span style="font-size:14px">{{att.attribute_name}} {{att.attribute_price | currency : 'Rp ' : 0}}</span>
                 </ion-checkbox>               
             </div>
         	
-            {{total | currency : 'Rp ' : 0}}
-            <button ng-click="closeModal()" class="button button-calm">Close</button>
-        	<button ng-click="addToCart(menu)" class="button button-balanced">Add To Cart</button>
+            <div class="padding-horizontal padding-bottom" style="text-align:center;font-weight:bold;font-size:15px;margin-bottom:10px">Total Price: {{total | currency : 'Rp ' : 0}}</div>
+            <div class="button-bar">
+                <button ng-click="closeModal()" class="button button-calm">Close</button>
+            	<button ng-click="addToCart(menu)" class="button button-balanced">Add To Cart</button>
+            </div>
          </ion-content>
     </form>
 </ion-modal-view>
 </script>
 
-<ion-view title="Boga Delivery">
+<ion-view title="<a href='#'>Boga Delivery</a>">
 
 <ion-nav-bar class="navbar">
 	<ion-nav-buttons side="left">

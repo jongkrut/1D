@@ -8,6 +8,9 @@
 .bar .title {
 	overflow:visible;
 }
+.bar .title a {
+	text-decoration: none;
+}
 .icon-header {
 	color:#fff;
 	font-size:15px;
@@ -132,7 +135,7 @@
 	padding-left:10px;
 	font-weight:bold;
 }
-.cart-summary-right a {
+.cart-summary-left a,.cart-summary-right a {
 	color:black;
 	text-decoration:none;
 }

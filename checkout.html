@@ -1,4 +1,4 @@
-<ion-view title="Boga Delivery">
+<ion-view title="<a href='#'>Boga Delivery</a>">
 
 
 <ion-nav-bar class="navbar">
@@ -40,7 +40,166 @@
 		<td colspan=2><br/><div class="sum_steps">3</div>Delivery Address
 	<tr>
 		<td>
-		<td>
+		<td><div ng-hide="searchType == 0">
+				<div class="card" ng-switch on="addr.address_type">
+					<addrType ng-switch-when="1">
+						<div class="item item-divider">
+							Kantor
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}} <br/>
+							{{addr.tower_division}} {{addr.floor}} <br/>
+						    {{addr.address_content}}
+							{{addr.room_unit}}							
+						</div>	
+					</addrType>
+					<addrType ng-switch-when="2">
+						<div class="item item-divider">
+							Rumah
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}}
+						    {{addr.address_content}}
+							{{addr.room_unit}}							
+						</div>	
+					</addrType>
+					<addrType ng-switch-when="3">
+						<div class="item item-divider">
+							Apartment
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}} <br/>
+							{{addr.tower_division}} {{addr.floor}} {{addr.room_unit}} <br/>
+						    {{addr.address_content}}															
+						</div>	
+					</addrType>
+					<addrType ng-switch-when="4">
+						<div class="item item-divider">
+							Hotel
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}}
+						    {{addr.floor}} {{addr.room_unit}} <br/>
+						    {{addr.address_content}}								
+						</div>	
+					</addrType>
+					<addrType ng-switch-when="5">
+						<div class="item item-divider">
+							Ruko/Rukan
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}}
+						    {{addr.floor}} {{addr.room_unit}} <br/>
+							{{addr.address_content}}					
+						</div>	
+					</addrType>
+					<addrType ng-switch-when="6">
+						<div class="item item-divider">
+							Kost
+						</div>
+						<div class="item item-text-wrap">
+							{{addr.address_name}}
+						    {{addr.floor}} {{addr.room_unit}} <br/>
+							{{addr.address_content}}								
+						</div>	
+					</addrType>
+				</div>
+			</div>
+
+			<div ng-show="searchType == 0">
+				<div class="list list-inset" ng-switch on="addr.address_type">
+					<label class="item item-input item-select">
+					    <div class="input-label">
+					      Tipe Alamat
+					    </div>
+						<select ng-model="addressInput.address_selection">
+							<option value="1">Office</option>					
+							<option value="2">Residence</option>		
+							<option value="3">Apartment</option>					
+							<option value="4">Hotel</option>	
+							<option value="5">Ruko/Rukan</option>						
+							<option value="6">Kost</option>						
+						</select>
+					</label>
+					<addrType ng-switch on="addressInput.address_selection">
+						<div ng-switch-when="1">
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Perusahaan" ng-model="addressInput.tower_division" >
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Gedung" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Lantai" ng-model="addressInput.floor">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Nomor" ng-model="addressInput.room_unit">
+							</label>
+						</div>
+						<div ng-switch-when="2">
+							<label class="item item-input">
+							    <input type="text" placeholder="Name Komplek" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Nomor" ng-model="addressInput.room_unit">
+							</label>
+						</div>
+						<div ng-switch-when="3">						
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Apartment" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Tower" ng-model="addressInput.tower_division" >
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Lantai" ng-model="addressInput.floor">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Nomor" ng-model="addressInput.room_unit">
+							</label>
+						</div>
+						<div ng-switch-when="4">						
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Hotel" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Lantai" ng-model="addressInput.floor">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Nomor" ng-model="addressInput.room_unit">
+							</label>
+						</div>
+						<div ng-switch-when="5">						
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Ruko/Rukan" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Lantai" ng-model="addressInput.floor">
+							</label>
+						</div>
+						<div ng-switch-when="6">						
+							<label class="item item-input">
+							    <input type="text" placeholder="Nama Kost" ng-model="addressInput.address_name">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Lantai" ng-model="addressInput.floor">
+							</label>
+							<label class="item item-input">
+							    <input type="text" placeholder="Kamar" ng-model="addressInput.room_unit">
+							</label>
+						</div>
+					</addrType>			
+					<div class="item item-input-inset">
+						<textarea ng-model="addressInput.address_content" placeholder="Full Address"></textarea>
+					</div>
+					<div class="item item-input-inset">
+						<textarea ng-model="addressInput.patokan" placeholder="Directions"></textarea>
+					</div>
+					<div class="item item-input-inset">
+						<button class="button button-block" ng-click="saveAddress(addressInput)">Save</button>
+					</div>
+				</div>
+			</div>
 	<tr>
 		<td colspan=2><br/><div class="sum_steps">4</div>Payment Method
 	<tr>

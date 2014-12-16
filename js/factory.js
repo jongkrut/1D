@@ -114,6 +114,11 @@ angular.module('customer',[]).factory('Customer',function($rootScope){
 		address : '',
 		init: function(customer){
 			localStorage.setItem("customer",JSON.stringify(customer));
+			localStorage.setItem("customer_address",JSON.stringify([]));
+		},
+		getCustomerID : function(){
+			customer = JSON.parse(localStorage.getItem("customer"));
+			return customer.customer_id;
 		},
 		setAddress: function(address) {
 			localStorage.setItem("customer_address",JSON.stringify(address));
@@ -124,9 +129,20 @@ angular.module('customer',[]).factory('Customer',function($rootScope){
 		getAddress: function() {
 			return JSON.parse(localStorage.getItem("customer_address"));
 		},
-		getAddressByID:function(index){
+		getAddressByIndex:function(index){
 			var address = JSON.parse(localStorage.getItem("customer_address"));
 			return address[index];
+		},
+		getAddressById:function(id){
+			address = JSON.parse(localStorage.getItem("customer_address"));
+			var addr = "";
+			for(var i = 0; i < address.length;i++){
+				if(address[i].address_id == id) {
+					addr = address[i];
+					break;
+				}
+			}
+			return addr;
 		},
 		getDefaultAddress : function(){
 			address = JSON.parse(localStorage.getItem("customer_address"));

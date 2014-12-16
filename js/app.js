@@ -114,7 +114,17 @@ app.controller('loginCtrl',function($scope,$http,$location,Customer,Search){
 			});
     };
     $scope.doSignUp = function (user) {
-		console.log(user);
+		$http({
+		    url: url + "/signup.php",
+		    method: "POST",
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    data: user
+		})
+		.then(function(response) {
+			//console.log(response.data);
+		    Customer.init(response.data);
+		    $location.path('/');
+		});
     };
 });
 
@@ -159,6 +169,7 @@ app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,$ioni
 		$scope.newAddress = false;
 		Search.init();
 	}
+
 	$scope.show = function() {
 	    $ionicLoading.show({
 	      template: 'Searching for Restaurants ...'
@@ -186,7 +197,7 @@ app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,$ioni
 	};
 	$scope.applyModal = function() {
 		var selected = $scope.data.selected;
-		$scope.defaultAddress = Customer.getAddressByID(selected);
+		$scope.defaultAddress = Customer.getAddressByIndex(selected);
 		$scope.modal.hide();
 	};
 	$scope.$on('$destroy', function() {
@@ -195,10 +206,10 @@ app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,$ioni
 
 	$scope.toSearch = function(){
 		$scope.show();
-		$scope.latitude = $scope.defaultAddress.latitude
-		$scope.longitude = $scope.defaultAddress.longitude
+		$scope.latitude = $scope.defaultAddress.latitude;
+		$scope.longitude = $scope.defaultAddress.longitude;
 		$http.get("http://backoffice.satudelivery.com/protected/ordering/area.json").success(function(data){
-	        var areaJson = data; 
+		    var areaJson = data; 
 			angular.forEach(areaJson, function(value,key){
 				angular.forEach(value.outlet,function(value1,key1){
 					var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
@@ -210,7 +221,7 @@ app.controller('homeCtrl',function($scope,$location,$ionicSideMenuDelegate,$ioni
 					}				
 				});
 			});
-			Search.setType("1");
+			Search.setType($scope.defaultAddress.address_id);
 			$scope.hide();
 			$location.path("/search");
 		});
@@ -249,7 +260,6 @@ app.controller('searchCtrl',function($scope,$stateParams,$http,Search,Customer){
 	$http.jsonp(urlLogin)
 		.success(function(data) {
 			$scope.outlets = data.outlet;
-//			console.log($scope.outlets);
 		});
 });
 
@@ -382,7 +392,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 	var areaJson = {};
 	$scope.searchInput = false;
 	Search.init();
-	Search.setType("2");
+	Search.setType("0");
 	$scope.areaCoverage = 0;
 	$scope.latitude = -6.219260;
 	$scope.longitude = 106.812410;
@@ -442,6 +452,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 		var log = 0;
 		Search.remove();
 		Search.addLoc($scope.latitude,$scope.longitude);
+		Search.setType("0");
 		angular.forEach(areaJson, function(value,key){
 			angular.forEach(value.outlet,function(value1,key1){
 				var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
@@ -480,6 +491,7 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 		        var log = 0;
 		        Search.remove();
 		        Search.addLoc($scope.latitude,$scope.longitude);
+		        Search.setType("0");
 				angular.forEach(areaJson, function(value,key){
 					angular.forEach(value.outlet,function(value1,key1){
 						var pathArray = google.maps.geometry.encoding.decodePath(value1.area);
@@ -597,12 +609,17 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 });
 
 app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$ionicLoading,Cart,Search,$location,Customer) {
-	$scope.logged_in = Customer.isLogged();
-	$scope.$on('state.update', function () {
-    	$scope.logged_in = false;
-    });
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
+	$scope.logged_in = Customer.isLogged();
+	$scope.addressInput = {};
+	$scope.$on('state.update', function () {
+    	$scope.logged_in = false;
+    	$location.path('/login-mid/'+$scope.outlet_id+'/'+$scope.brand_id);
+    });
+    if($scope.logged_in == false) {
+    	$location.path('/login-mid/'+$scope.outlet_id+'/'+$scope.brand_id);
+    }
 	Cart.init($scope.outlet_id);
 	$scope.items = Cart.getAll();
 	$scope.totalPrice = parseInt(Cart.getTotalPrice());
@@ -610,4 +627,26 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 	$scope.tax_service_charge = Cart.getTaxCharge()/100 * $scope.totalPrice;
 	$scope.delivery_fee = parseInt(Cart.getDeliveryFee());
 	$scope.searchType = Search.getType();
+	if($scope.searchType > 0) {
+		$scope.addr = Customer.getAddressById($scope.searchType);
+	}
+	else {
+		$scope.addressInput.address_selection = 1;
+	}
+
+	$scope.saveAddress = function(address) {
+		$scope.addressInput.latitude = Search.getLat();
+		$scope.addressInput.longitude = Search.getLng();
+		$scope.addressInput.customer_id = Customer.getCustomerID();
+		console.log($scope.addressInput);
+		$http({
+		    url: url + "/saveAddress.php",
+		    method: "POST",
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    data: $scope.addressInput
+		})
+		.then(function(response) {
+
+		});
+	};
 });
