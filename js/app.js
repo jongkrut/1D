@@ -8,6 +8,19 @@ var app = angular.module('indexApp', [
   "ui.bootstrap.datetimepicker"
 ]);
 
+app.config(['$httpProvider', function($httpProvider) {
+          $httpProvider.defaults.useXDomain = true;
+
+          /**
+           * Just setting useXDomain to true is not enough. AJAX request are also
+           * send with the X-Requested-With header, which indicate them as being
+           * AJAX. Removing the header is necessary, so the server is not
+           * rejecting the incoming request.
+           **/
+          delete $httpProvider.defaults.headers.common['X-Requested-With'];
+      }
+]);
+
 app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state('login', {	
 					url : '/login',
@@ -19,6 +32,10 @@ app.config(['$stateProvider', function($stateProvider) {
 	}).state('home', { 	url : '/',
 						templateUrl : 'home.html',
 						controller : 'homeCtrl'
+	}).state('my-address', { 	
+						url : '/my-address',
+						templateUrl : 'address.html',
+						controller : 'addressCtrl'
 	}).state('map-search', { 
 						url : '/map-search',
 						templateUrl : 'map-search.html',
@@ -114,10 +131,11 @@ app.controller('loginCtrl',function($scope,$http,$location,Customer,Search){
 			});
     };
     $scope.doSignUp = function (user) {
+    	$http.defaults.useXDomain = true;
 		$http({
 		    url: url + "/signup.php",
 		    method: "POST",
-		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'},
 		    data: user
 		})
 		.then(function(response) {
@@ -519,12 +537,13 @@ app.controller('mapsCtrl',function($scope,$http,$ionicLoading,Search,$location,C
 });
 
 
-app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicLoading,Cart,Customer,$location) {
+app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicLoading,Cart,Customer,$location,$ionicPopup) {
 	$scope.outlet_id = $stateParams.outlet_id;
 	$scope.brand_id = $stateParams.brand_id;
 	$scope.data = {};
 	$scope.data.datetimetype = 1;
 	$scope.data.datetime = new Date();
+	$scope.min_hit = false;
 	$scope.logged_in = Customer.isLogged();
 	$scope.$on('state.update', function () {
     	$scope.logged_in = false;
@@ -556,9 +575,13 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 	$http.jsonp(urlz).success(function(data){
 		$scope.tax_service_charge = data.charge.tax_service_charge;
 		$scope.delivery_fee = data.charge.delivery_fee;
+		$scope.min_transaction = data.charge.min_transaction;
 		Cart.updatePrice($scope.tax_service_charge,$scope.delivery_fee);
 		$scope.grandtotal = ($scope.totalPrice*$scope.tax_service_charge/100) + $scope.totalPrice + $scope.delivery_fee;
+		if($scope.totalPrice > $scope.min_transaction)
+			$scope.min_hit = true;
 	});
+
 
 	$scope.editItem = function(index) {
 
@@ -573,6 +596,10 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 		if(totalItems == 0)
 			$location.path("/order/"+$scope.outlet_id+"/"+$scope.brand_id+"/");
 		$scope.grandtotal = ($scope.totalPrice*$scope.tax_service_charge/100) + $scope.totalPrice + $scope.delivery_fee;
+		if($scope.totalPrice > $scope.min_transaction)
+			$scope.min_hit = true;
+		else
+			$scope.min_hit = false;
 	};
 
 	$ionicModal.fromTemplateUrl('datetime-template.html', {
@@ -598,6 +625,12 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 		$scope.data.datetimetype = 2;
     	$scope.modal.hide();
   	};
+  	$scope.showAlert = function() {
+	   var alertPopup = $ionicPopup.alert({
+	     title: 'Mininum Order',
+	     template: 'Minimum Order untuk Delivery tidak Tercapai'
+	   });
+	};
   	$scope.toCheckout = function() {
   		if(Customer.isLogged()) {
   			$location.path('/checkout/'+$scope.outlet_id+'/'+$scope.brand_id);
@@ -613,6 +646,7 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 	$scope.brand_id = $stateParams.brand_id;
 	$scope.logged_in = Customer.isLogged();
 	$scope.addressInput = {};
+	$scope.deliveryInstruction = {};
 	$scope.$on('state.update', function () {
     	$scope.logged_in = false;
     	$location.path('/login-mid/'+$scope.outlet_id+'/'+$scope.brand_id);
@@ -638,15 +672,43 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 		$scope.addressInput.latitude = Search.getLat();
 		$scope.addressInput.longitude = Search.getLng();
 		$scope.addressInput.customer_id = Customer.getCustomerID();
-		console.log($scope.addressInput);
+
 		$http({
 		    url: url + "/saveAddress.php",
 		    method: "POST",
 		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-		    data: $scope.addressInput
+		    data: address
 		})
 		.then(function(response) {
+			if(response.data.address_id > 0) {
+				Customer.setAddress(response.data.address);
+				Search.setType(response.data.address_id);
+				$scope.searchType = response.data.address_id;
+				$scope.addr = Customer.getAddressById($scope.searchType);
+			}
+		});
+	};
 
+	$scope.placeOrder = function(){
+		var test ={};
+		test.items = Cart.getAll();
+		test.customer_id = Customer.getCustomerID();
+		test.address_id = $scope.searchType;
+		test.outlet_id = $scope.outlet_id;
+		test.brand_id = $scope.brand_id;
+		test.cart.tax_service_charge = $scope.tax_service_charge;
+		test.cart.delivery_fee = $scope.delivery_fee;
+		test.deliveryInstruction = $scope.deliveryInstruction.data;
+		test.payment_method = "cash";
+		
+		$http({
+		    url: url + "/placeOrder.php",
+		    method: "POST",
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    data: test
+		})
+		.then(function(response) {
+			console.log(response.data);
 		});
 	};
 });

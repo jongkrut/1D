@@ -2,21 +2,24 @@
 
 
 <ion-nav-bar class="navbar">
-	<div class="buttons left-buttons" ng-click="toggleLeft()" style="cursor:pointer">
-		<i class="ion-navicon-round" style="color:#fff;margin-top:5px;font-size:20px"></i>
-		<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;"/>
-	</div>
+	<ion-nav-buttons side="left">
+		<button class="button-clear" ng-click="goBack()">
+			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:50%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+		</button>
+	</ion-nav-buttons>
+	
 
 	<ion-nav-buttons side="right">
-		<a class="button-clear" ng-hide="logged_in" ng-href="#/login" style="text-decoration:none">
+		<a href="#/login" class="button-clear" ng-hide="logged_in" style="text-decoration:none">
 			<i class="ion-person icon-header"> Login</i>
 		</a>
 			
 		<button class="button-clear" ng-click="openPopover($event)" ng-show="logged_in">
 			<i class="ion-person icon-header"></i>
 		</button>
-	</ion-nav-buttons>
+    </ion-nav-buttons>
 </ion-nav-bar>
+
 <ion-content style="background-color:#eee">
 
 <table class="table_checkout">
@@ -35,7 +38,7 @@
 		<td colspan=2><br/><div class="sum_steps">2</div>Delivery Instruction
 	<tr>
 		<td>			
-		<td><div class="list list-inset"><div class="item item-input-inset"><textarea></textarea></div></div>
+		<td><div class="list list-inset"><div class="item item-input-inset"><textarea ng-model="deliveryInstruction.data"></textarea></div></div>
 	<tr>
 		<td colspan=2><br/><div class="sum_steps">3</div>Delivery Address
 	<tr>
@@ -207,8 +210,10 @@
 		<td>
 			<div class="card"><div class="item item-text-wrap"><strong>Cash On Delivery</strong></div></div>
 </table>
+
 <div class="padding">
-	<div class="button-bar "><button class="button button-assertive">Place Order</button></div>
+	<div class="button-bar "><button class="button button-assertive" ng-click="placeOrder()">Place Order</button></div>
 </div>
+
 </ion-content>
 </ion-view>

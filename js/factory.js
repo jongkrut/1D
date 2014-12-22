@@ -25,14 +25,15 @@ angular.module('cart',[]).factory('Cart',function(){
 			var total = 0;
 			var attr_total = 0;
 			for(var i = 0; i < items.length;i++){
-				if(items[i].size == undefined) {
+				if(items[i].size_id == undefined) {
 					total = total + (parseInt(items[i].qty) * parseInt(items[i].menu_price));
+				} else {
+					total = total +  (parseInt(items[i].qty) * parseInt(items[i].size_id.size_price));
 				}
 				if(items[i].attr !== undefined) {
 					for(var j = 0; j < items[i].attr.length ; j++){
 						attr_total += (parseInt(items[i].qty) * parseInt(items[i].attr[j].attribute_price));
-					}
-					
+					}	
 				}
 			}
 			return (total+attr_total);

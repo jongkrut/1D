@@ -17,10 +17,11 @@
 <ion-view title="<a href='#'>Boga Delivery</a>">
 
 <ion-nav-bar class="navbar">
-	<ion-nav-back-button class="button-clear">
-		<i class="ion-arrow-left-b" style="color:#fff"></i>	
-	</ion-nav-back-button>
-	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+	<ion-nav-buttons side="left">
+		<button class="button-clear" ng-click="goBack()">
+			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:50%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+		</button>
+	</ion-nav-buttons>
 	
 
 	<ion-nav-buttons side="right">
@@ -56,8 +57,11 @@
 				<div ng-repeat = "att in item.attr" style="font-style:italic;font-size:12px">
 					+ {{item.qty}} {{att.attribute_name}} | {{ item.qty*att.attribute_price | currency : ''}}
 				</div>
-				<div style="font-weight:bold">
+				<div style="font-weight:bold" ng-hide="item.size_id">
 					{{item.menu_price * item.qty | currency : 'Rp ' : 0}}
+				</div>
+				<div style="font-weight:bold" ng-show="item.size_id">
+					{{item.size_id.size_price * item.qty | currency : 'Rp ' : 0}}
 				</div>
 			
 		</div>
@@ -96,21 +100,26 @@
 		</div>
 	</ion-item>
 </ion-list>
-<div class="card">
+
+<div class="card" ng-show="min_hit">
 	<div class="item item-text-wrap" style="text-align:center">
 		<span ng-if="data.datetimetype == 1">Immediate - ASAP</span>
 		<span ng-if="data.datetimetype == 2">Future - {{data.datetime | date : 'yyyy-MM-dd HH:mm:ss'}}</span>
 	</div>
 </div>
 
-<div class="button-bar" style="margin-top:25px">
-	<a class="button button-dark" ng-click="openModal()">
+<div class="bar bar-dark padding" ng-hide="min_hit" ng-click="showAlert()" style="text-align:center">
+	<h1 class="title">Minimum Order {{min_transaction | currency : 'Rp ' : 0}}</h1>
+</div>
+
+
+<div class="button-bar" style="margin-top:25px" ng-show="min_hit">
+	<a class="button button-calm" ng-click="openModal()">
 		Delivery Time
 	</a>
-
-	<button class="button button-assertive" ng-click="toCheckout()">
+	<button class="button button-balanced"  ng-click="toCheckout()">
 		Checkout
-	</button>
+	</button>	
 </div>
 
 <div style="height:50px;width:100%"></div>

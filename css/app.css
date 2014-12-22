@@ -112,6 +112,14 @@
 }
 
 
+.resto_list {
+	padding:0px !important;
+	border-radius:5px;
+}
+
+.resto_list a {
+	text-decoration: none;
+}
 
 .cart-summary-container {
 	border:1px solid #bdbdbd;
