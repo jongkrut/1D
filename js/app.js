@@ -110,6 +110,15 @@ app.controller('panelCtrl',function($scope,$location){
 	
 });
 
+app.controller('addressCtrl',function($scope,$http,$location,Customer){
+	$scope.logged_in = Customer.isLogged();
+	$scope.$on('state.update', function () {
+    	$scope.logged_in = false;
+    	$scope.newAddress = true;
+    });
+	$scope.addresses = Customer.getAddress();
+});
+
 app.controller('loginCtrl',function($scope,$http,$location,Customer,Search){
 	$scope.errorLogin = 0;
 	$scope.doLogin = function (user) {
