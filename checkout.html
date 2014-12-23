@@ -4,7 +4,7 @@
 <ion-nav-bar class="navbar">
 	<ion-nav-buttons side="left">
 		<button class="button-clear" ng-click="goBack()">
-			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:50%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:30px;width:auto;" ng-click="goBack()"/>
+			<i class="ion-arrow-left-b" style="color:#fff;vertical-align:70%"></i>	<img alt="Brand" src="img/boga_icon.png" id="brand" style="height:40px;margin-top:-5px;width:auto;" ng-click="goBack()"/>
 		</button>
 	</ion-nav-buttons>
 	
@@ -211,8 +211,12 @@
 			<div class="card"><div class="item item-text-wrap"><strong>Cash On Delivery</strong></div></div>
 </table>
 
-<div class="padding">
+<div class="padding" ng-hide="searchType == 0">
 	<div class="button-bar "><button class="button button-assertive" ng-click="placeOrder()">Place Order</button></div>
+</div>
+
+<div class="padding card" ng-show="searchType == 0">
+	Delivery Address is not set.
 </div>
 
 </ion-content>

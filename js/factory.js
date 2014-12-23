@@ -59,6 +59,16 @@ angular.module('cart',[]).factory('Cart',function(){
 			delivery_charge = delfee;
 			localStorage.setItem("delfee-"+outlet_id,delfee);
 			localStorage.setItem("tsc-"+outlet_id,tsc);
+		},
+		updateTime : function(type,datetime) {
+			localStorage.setItem("datetype-"+outlet_id,type);
+			localStorage.setItem("datetime-"+outlet_id,datetime);
+		},
+		getDeliveryType:function(){
+			return localStorage.getItem("datetype-"+outlet_id);
+		},
+		getDeliveryTime: function(){
+			return localStorage.getItem("datetime-"+outlet_id);
 		}
 	}
 	return cart;
@@ -136,25 +146,33 @@ angular.module('customer',[]).factory('Customer',function($rootScope){
 		},
 		getAddressById:function(id){
 			address = JSON.parse(localStorage.getItem("customer_address"));
+			if(address == null) {
+				return "";
+			} else {
 			var addr = "";
-			for(var i = 0; i < address.length;i++){
-				if(address[i].address_id == id) {
-					addr = address[i];
-					break;
+				for(var i = 0; i < address.length;i++){
+					if(address[i].address_id == id) {
+						addr = address[i];
+						break;
+					}
 				}
+				return addr;
 			}
-			return addr;
 		},
 		getDefaultAddress : function(){
 			address = JSON.parse(localStorage.getItem("customer_address"));
-			var addr = "";
-			for(var i = 0; i < address.length;i++){
-				if(address[i].default_address == 1) {
-					addr = address[i];
-					break;
+			if(address == null) {
+				return "";
+			} else {
+				var addr = "";
+				for(var i = 0; i < address.length;i++){
+					if(address[i].default_address == 1) {
+						addr = address[i];
+						break;
+					}
 				}
+				return addr;
 			}
-			return addr;
 		},
 		logout: function(){
 			localStorage.removeItem("customer");

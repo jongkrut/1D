@@ -148,9 +148,11 @@ app.controller('loginCtrl',function($scope,$http,$location,Customer,Search){
 		    data: user
 		})
 		.then(function(response) {
-			//console.log(response.data);
-		    Customer.init(response.data);
-		    $location.path('/');
+			console.log(response.data);
+			if(response.data.customer_id > 0) {
+				Customer.init(response.data);
+		    	$location.path('/');
+			} 
 		});
     };
 });
@@ -284,10 +286,9 @@ app.controller('searchCtrl',function($scope,$stateParams,$http,Search,Customer){
     	$scope.logged_in = false;
     });
 	var urlLogin = url + "/search.php?outlet_id="+Search.getAll().replace("[","").replace("]","")+"&callback=JSON_CALLBACK";
-	$http.jsonp(urlLogin)
-		.success(function(data) {
+	$http.jsonp(urlLogin).success(function(data) {
 			$scope.outlets = data.outlet;
-		});
+	});
 });
 
 app.controller('orderCtrl',function($scope,$stateParams,$ionicModal,$http,Cart,$ionicLoading,$location,Customer){
@@ -552,7 +553,10 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 	$scope.data = {};
 	$scope.data.datetimetype = 1;
 	$scope.data.datetime = new Date();
+    var momentz = moment($scope.data.datetime);
+    Cart.updateTime($scope.data.datetimetype,momentz.unix());
 	$scope.min_hit = false;
+
 	$scope.logged_in = Customer.isLogged();
 	$scope.$on('state.update', function () {
     	$scope.logged_in = false;
@@ -629,10 +633,14 @@ app.controller('cartCtrl',function($scope,$http,$stateParams,$ionicModal,$ionicL
 		$scope.data.datetimetype = 1;
 		$scope.data.datetime = new Date();
     	$scope.modal.hide();
+    	var momentz = moment($scope.data.datetime);
+    	Cart.updateTime($scope.data.datetimetype,momentz.unix());
   	};
 	$scope.saveModal = function() {
 		$scope.data.datetimetype = 2;
     	$scope.modal.hide();
+    	var momentz = moment($scope.data.datetime);
+    	Cart.updateTime($scope.data.datetimetype,momentz.unix());
   	};
   	$scope.showAlert = function() {
 	   var alertPopup = $ionicPopup.alert({
@@ -686,7 +694,7 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 		    url: url + "/saveAddress.php",
 		    method: "POST",
 		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-		    data: address
+		    data: $scope.addressInput
 		})
 		.then(function(response) {
 			if(response.data.address_id > 0) {
@@ -696,6 +704,7 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 				$scope.addr = Customer.getAddressById($scope.searchType);
 			}
 		});
+
 	};
 
 	$scope.placeOrder = function(){
@@ -705,10 +714,14 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 		test.address_id = $scope.searchType;
 		test.outlet_id = $scope.outlet_id;
 		test.brand_id = $scope.brand_id;
-		test.cart.tax_service_charge = $scope.tax_service_charge;
-		test.cart.delivery_fee = $scope.delivery_fee;
+		test.tax_service_charge = $scope.tax_service_charge;
+		test.delivery_fee = $scope.delivery_fee;
 		test.deliveryInstruction = $scope.deliveryInstruction.data;
 		test.payment_method = "cash";
+		test.subtotal = Cart.getTotalPrice();
+		test.order_type = Cart.getDeliveryType();
+		test.order_datetime = Cart.getDeliveryTime();
+		console.log(test);
 		
 		$http({
 		    url: url + "/placeOrder.php",
@@ -719,5 +732,6 @@ app.controller('checkoutCtrl',function($scope,$http,$stateParams,$ionicPopup,$io
 		.then(function(response) {
 			console.log(response.data);
 		});
+		
 	};
 });
